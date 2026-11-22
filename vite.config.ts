@@ -115,7 +115,7 @@ export default defineConfig({
   plugins: [react(), tailwindcss(), localCloudinarySignPlugin()],
   server: {
     watch: {
-      ignored: ['**/public/**', '**/dist/**'],
+      ignored: ['**/public/**', '**/dist/**', '**/*.pdf'],
     },
   },
 })

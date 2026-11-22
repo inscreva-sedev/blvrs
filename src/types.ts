@@ -112,4 +112,5 @@ export interface QuoteSubmission {
   timeline: string
   message: string
   createdAt: string
+  status?: 'Novo' | 'Em análise' | 'Respondido'
 }

@@ -5,9 +5,10 @@ import { ServicesShowcase } from './components/ServicesShowcase'
 import { ClientsSection } from './components/ClientsSection'
 import { PortfolioSection } from './components/PortfolioSection'
 import { AboutAndPillars } from './components/AboutAndPillars'
+import { FounderSection } from './components/FounderSection'
 import { ContactSection } from './components/ContactSection'
 import { QuoteModal } from './components/QuoteModal'
-import { CmsDrawer } from './components/CmsDrawer'
+import { AdminDashboard } from './components/AdminDashboard'
 import { AdminLoginModal } from './components/AdminLoginModal'
 import { FloatingBar } from './components/FloatingBar'
 import { ScrollProgress } from './components/ScrollProgress'
@@ -33,7 +34,7 @@ import {
 } from './types'
 
 const STORAGE_KEYS = {
-  projects: 'blvrs_projects_v5',
+  projects: 'blvrs_projects_v6',
   config: 'blvrs_config_v2',
   quotes: 'blvrs_quotes_v1',
   heroSlides: 'blvrs_hero_v1',
@@ -245,14 +246,14 @@ export function App() {
       />
 
       <main>
-        {/* 01. Página Inicial — Hero Carousel inspirado na Tesla */}
+        {/* 01. Página Inicial - Hero Carousel inspirado na Tesla */}
         <HeroCarousel
           slides={heroSlides}
           onPrimaryAction={(srv) => openQuoteModal(srv)}
           onSecondaryAction={handleSecondaryHeroAction}
         />
 
-        {/* 03. Serviços — Showcase Horizontal em Cartões */}
+        {/* 03. Serviços - Showcase Horizontal em Cartões */}
         <ServicesShowcase
           services={services}
           onRequestQuote={(srv) => openQuoteModal(srv)}
@@ -265,7 +266,7 @@ export function App() {
           onOpenQuote={(srv, note) => openQuoteModal(srv, note)}
         />
 
-        {/* 04. Portefólio — Galeria por Categorias */}
+        {/* 04. Portefólio - Galeria por Categorias */}
         <PortfolioSection
           projects={projects}
           activeCategory={portfolioFilter}
@@ -276,6 +277,9 @@ export function App() {
 
         {/* 02. Sobre Nós, Identidade & Pilares */}
         <AboutAndPillars config={config} onOpenQuote={() => openQuoteModal()} />
+
+        {/* Fundador & Direcção Criativa - Len Wolts */}
+        <FounderSection onOpenQuote={() => openQuoteModal()} />
 
         {/* 05. Contactos & Formulário de Orçamento */}
         <ContactSection
@@ -302,6 +306,9 @@ export function App() {
               </a>
               <a href="#portfolio" className="hover:text-white transition-colors">
                 Portefólio
+              </a>
+              <a href="#fundador" className="hover:text-white transition-colors">
+                Fundador
               </a>
               <a href="#contactos" className="hover:text-white transition-colors">
                 Contactos
@@ -355,7 +362,7 @@ export function App() {
         }}
       />
 
-      <CmsDrawer
+      <AdminDashboard
         isOpen={cmsOpen && Boolean(adminSession)}
         adminEmail={adminSession?.email || ''}
         onLogout={handleLogoutAdmin}
@@ -374,6 +381,7 @@ export function App() {
         onUpdateServices={setServices}
         onUpdateClients={setClients}
         onUpdateClientCreatives={setClientCreatives}
+        onUpdateQuotes={setQuotes}
         onUpdateConfig={handleUpdateConfig}
         onResetDefaults={handleResetDefaults}
       />

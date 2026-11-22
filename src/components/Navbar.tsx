@@ -450,6 +450,13 @@ export const Navbar: React.FC<NavbarProps> = ({
                   </button>
                   <button
                     type="button"
+                    onClick={() => scrollTo('#fundador')}
+                    className="block hover:text-[#F36B21] transition-colors cursor-pointer"
+                  >
+                    Fundador (Len Wolts)
+                  </button>
+                  <button
+                    type="button"
                     onClick={() => scrollTo('#clientes')}
                     className="block hover:text-[#F36B21] transition-colors cursor-pointer"
                   >
@@ -485,6 +492,7 @@ export const Navbar: React.FC<NavbarProps> = ({
             { label: 'Nossos Clientes', href: '#clientes' },
             { label: 'Portefólio', href: '#portfolio' },
             { label: 'Sobre Nós', href: '#sobre' },
+            { label: 'Fundador', href: '#fundador' },
             { label: 'Pilares & Identidade', href: '#pilares' },
             { label: 'Contactos', href: '#contactos' },
           ].map((link) => (

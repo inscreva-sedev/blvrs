@@ -188,7 +188,7 @@ export const SERVICES_DATA: ServiceItem[] = [
 export const DEFAULT_PROJECTS: ProjectItem[] = [
   {
     id: 'proj-real-chicken-village',
-    title: 'Campanha Digital & Identidade — Chicken Village',
+    title: 'Campanha Digital & Identidade - Chicken Village',
     client: 'Chicken Village',
     year: '2026',
     category: 'Conteúdos Digitais',
@@ -210,7 +210,7 @@ export const DEFAULT_PROJECTS: ProjectItem[] = [
   },
   {
     id: 'proj-real-alibaba',
-    title: 'Conteúdos de Marca & Campanhas — Ali Baba',
+    title: 'Conteúdos de Marca & Campanhas - Ali Baba',
     client: 'Ali Baba e os 40 Frangos',
     year: '2026',
     category: 'Branding',
@@ -232,7 +232,7 @@ export const DEFAULT_PROJECTS: ProjectItem[] = [
   },
   {
     id: 'proj-real-vivasaude',
-    title: 'Comunicação & Autoridade — Farmácia Viva Saúde',
+    title: 'Comunicação & Autoridade - Farmácia Viva Saúde',
     client: 'Farmácia Viva Saúde',
     year: '2026',
     category: 'Conteúdos Digitais',
@@ -254,7 +254,7 @@ export const DEFAULT_PROJECTS: ProjectItem[] = [
   },
   {
     id: 'proj-real-imfisio',
-    title: 'Posicionamento Clínico — IM Fisio',
+    title: 'Posicionamento Clínico - IM Fisio',
     client: 'IM Fisio',
     year: '2026',
     category: 'Branding',
@@ -276,7 +276,7 @@ export const DEFAULT_PROJECTS: ProjectItem[] = [
   },
   {
     id: 'proj-horizon-film',
-    title: 'Manifesto Institucional — Horizonte Energia',
+    title: 'Manifesto Institucional - Horizonte Energia',
     client: 'Horizonte Energia',
     year: '2026',
     category: 'Audiovisual',
@@ -292,7 +292,7 @@ export const DEFAULT_PROJECTS: ProjectItem[] = [
   },
   {
     id: 'proj-noir-editorial',
-    title: 'Fotografia Corporativa & Espaço — IM Fisio',
+    title: 'Fotografia Corporativa & Espaço - IM Fisio',
     client: 'IM Fisio',
     year: '2026',
     category: 'Fotografia',
@@ -312,7 +312,7 @@ export const DEFAULT_PROJECTS: ProjectItem[] = [
   },
   {
     id: 'proj-pulse-brand',
-    title: 'Rebranding & Direcção Criativa — Vértice Studio',
+    title: 'Rebranding & Direcção Criativa - Vértice Studio',
     client: 'Vértice Arquitectos',
     year: '2025',
     category: 'Branding',
@@ -327,7 +327,7 @@ export const DEFAULT_PROJECTS: ProjectItem[] = [
   },
   {
     id: 'proj-soundwave-clip',
-    title: 'Produção Audiovisual & Tour Virtual — Espaço IM Fisio',
+    title: 'Produção Audiovisual & Tour Virtual - Espaço IM Fisio',
     client: 'IM Fisio',
     year: '2026',
     category: 'Audiovisual',
@@ -342,7 +342,7 @@ export const DEFAULT_PROJECTS: ProjectItem[] = [
   },
   {
     id: 'proj-motion-launch',
-    title: 'Série de Conteúdos Digitais & Motion — Finova',
+    title: 'Série de Conteúdos Digitais & Motion - Finova',
     client: 'Finova Digital',
     year: '2026',
     category: 'Conteúdos Digitais',
@@ -494,7 +494,7 @@ export const CLIENT_CREATIVES: ClientCreativeItem[] = [
     clientKey: 'Chicken Village',
     clientName: 'Chicken Village',
     sector: 'Gastronomia',
-    title: `Campanha Semana 1 — Peça 0${n}`,
+    title: `Campanha Semana 1 - Peça 0${n}`,
     image: `/Criativos%20feitos%20para%20clientes/images%20-%20Chicken%20Village/Semana-1_0${n}.png`,
   })),
   // Ali Baba
@@ -503,7 +503,7 @@ export const CLIENT_CREATIVES: ClientCreativeItem[] = [
     clientKey: 'Ali Baba',
     clientName: 'Ali Baba e os 40 Frangos',
     sector: 'Restauração',
-    title: `Campanha Promocional — Peça 0${n}`,
+    title: `Campanha Promocional - Peça 0${n}`,
     image: `/Criativos%20feitos%20para%20clientes/images%20-%20AliBaba/Alibaba-Foof-4-contents_0${n}.png`,
   })),
   // Farmácia Viva Saúde
@@ -512,7 +512,7 @@ export const CLIENT_CREATIVES: ClientCreativeItem[] = [
     clientKey: 'Farmácia Viva Saúde',
     clientName: 'Farmácia Viva Saúde',
     sector: 'Saúde & Bem-Estar',
-    title: `Série Saúde & Bem-Estar — Peça 0${n}`,
+    title: `Série Saúde & Bem-Estar - Peça 0${n}`,
     image: `/Criativos%20feitos%20para%20clientes/images%20-%20Farmacia%20VIVA%20saude/Farmacia-4-contents_0${n}.png`,
   })),
   // IM Fisio
@@ -521,7 +521,7 @@ export const CLIENT_CREATIVES: ClientCreativeItem[] = [
     clientKey: 'IM Fisio',
     clientName: 'IM Fisio',
     sector: 'Fisioterapia & Reabilitação',
-    title: 'Fotografia Editorial — Consulta Clínica',
+    title: 'Fotografia Editorial - Consulta Clínica',
     image: '/images/im-fisio-consulta.jpg',
   },
   ...[1, 2, 3, 4].map((n) => ({
@@ -529,7 +529,7 @@ export const CLIENT_CREATIVES: ClientCreativeItem[] = [
     clientKey: 'IM Fisio',
     clientName: 'IM Fisio',
     sector: 'Fisioterapia & Reabilitação',
-    title: `Campanha Clínica — Peça 0${n}`,
+    title: `Campanha Clínica - Peça 0${n}`,
     image: `/Criativos%20feitos%20para%20clientes/images%20-IMfisio/Clinica-Fisioterapeuta-4-contents_0${n}.png`,
   })),
 ]

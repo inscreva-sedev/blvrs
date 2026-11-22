@@ -12,7 +12,7 @@ interface AboutAndPillarsProps {
 export const AboutAndPillars: React.FC<AboutAndPillarsProps> = ({ config, onOpenQuote }) => {
   return (
     <>
-      {/* 02. Sobre Nós — High-Contrast White Editorial Section */}
+      {/* 02. Sobre Nós - High-Contrast White Editorial Section */}
       <section id="sobre" className="bg-white text-[#0B0B0B] py-16 sm:py-24">
         <div className="mx-auto max-w-[1440px] px-4 sm:px-8">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
@@ -30,7 +30,7 @@ export const AboutAndPillars: React.FC<AboutAndPillarsProps> = ({ config, onOpen
                 Acreditamos que uma boa comunicação vai além da estética. Cada projecto deve ter
                 uma intenção, uma identidade e uma mensagem clara. A{' '}
                 <strong className="text-[#0B0B0B]">BLVRS MEDIA</strong> não pretende ser apenas uma
-                agência de publicação de conteúdos — o nosso foco está na criação, produção e
+                agência de publicação de conteúdos - o nosso foco está na criação, produção e
                 orientação de comunicação que valoriza marcas, fortalece a percepção do público e
                 constrói autoridade.
               </p>
@@ -104,7 +104,7 @@ export const AboutAndPillars: React.FC<AboutAndPillarsProps> = ({ config, onOpen
         </div>
       </section>
 
-      {/* Identidade Visual & Pilares de Conteúdo — Dark Editorial Band */}
+      {/* Identidade Visual & Pilares de Conteúdo - Dark Editorial Band */}
       <section id="pilares" className="bg-[#171717] text-white py-16 sm:py-24 border-t border-white/10">
         <div className="mx-auto max-w-[1440px] px-4 sm:px-8 space-y-16">
           {/* Pilares de Conteúdo */}

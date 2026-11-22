@@ -12,6 +12,7 @@ import { AdminDashboard } from './components/AdminDashboard'
 import { AdminLoginModal } from './components/AdminLoginModal'
 import { FloatingBar } from './components/FloatingBar'
 import { ScrollProgress } from './components/ScrollProgress'
+import { ScrollControl } from './components/ScrollControl'
 import { AdminSession, getAdminSession, getAuthHeaders, logoutAdmin } from './lib/auth'
 import {
   CLIENT_CREATIVES,
@@ -34,7 +35,7 @@ import {
 } from './types'
 
 const STORAGE_KEYS = {
-  projects: 'blvrs_projects_v7',
+  projects: 'blvrs_projects_v10',
   config: 'blvrs_config_v3',
   quotes: 'blvrs_quotes_v1',
   heroSlides: 'blvrs_hero_v1',
@@ -436,6 +437,7 @@ export function App() {
       </footer>
 
       <FloatingBar config={config} onOpenQuote={() => openQuoteModal()} />
+      <ScrollControl />
 
       <QuoteModal
         isOpen={quoteModalOpen}

@@ -154,29 +154,18 @@ export const FounderSection: React.FC<FounderSectionProps> = ({ onOpenQuote }) =
                 01 - Sobre mim
               </span>
               <p>
-                Chamo-me <strong className="text-white">Jermaine Adverencio</strong>, também
-                conhecido como <strong className="text-white">Len Wolts</strong>. Tenho 27 anos e
-                sou um artista e profissional de Marketing com 6 anos de experiência no universo da
-                comunicação criativa, gestão de redes sociais e produção de conteúdos com impacto.
+                Sou <strong className="text-white">Jermaine Adverencio (Len Wolts)</strong>, 27
+                anos, artista e profissional de Marketing com 6 anos de experiência em comunicação
+                criativa, redes sociais e produção de conteúdos.
               </p>
               <p>
-                A minha ligação com a arte e o marketing começou ainda em criança, fascinado pelas
-                publicidades que via na televisão e nos outdoors. Em 2019, dei os primeiros passos
-                profissionais como fotógrafo publicitário e logo tive a oportunidade de liderar uma
-                campanha completa para a <strong className="text-white">Fashion World Mz</strong>,
-                assumindo a estratégia, os spots, os cartazes e a direção criativa.
-              </p>
-              <p>
-                Desde então, tenho trabalhado com marcas, projetos e programas que exigem mais do
-                que apenas estética: pedem visão estratégica, consistência e autenticidade. Sou
-                movido por ideias que conectam e geram resultados seja a construir uma identidade
-                digital de raiz, produzir conteúdo relevante ou dinamizar a presença online de um
-                negócio.
+                Comecei em 2019 como fotógrafo publicitário e liderei a campanha completa da{' '}
+                <strong className="text-white">Fashion World Mz</strong> (estratégia, spots,
+                cartazes e direção criativa).
               </p>
               <p className="text-white font-medium">
-                Mais do que criar, procuro sempre ensinar com aquilo que faço e aprender com cada
-                experiência. O meu objetivo é tornar-me uma referência no campo criativo e no
-                marketing digital, contribuindo para projetos com alma e propósito.
+                Movido por ideias que conectam estética e resultados, procuro ensinar, aprender e
+                construir marcas com alma e propósito.
               </p>
             </div>
 
@@ -272,31 +261,18 @@ export const FounderSection: React.FC<FounderSectionProps> = ({ onOpenQuote }) =
             <h3 className="font-display text-2xl sm:text-3xl font-extrabold text-white">
               Identidade, consistência, narrativa e propósito.
             </h3>
-            <div className="space-y-4 text-sm sm:text-base text-[#E5E5E5] leading-relaxed">
+            <div className="space-y-3 text-sm sm:text-base text-[#E5E5E5] leading-relaxed">
               <p>
-                Mais do que presença, acredito que o verdadeiro poder do digital está no
-                posicionamento e na forma como uma marca, um profissional ou um projeto decide
-                aparecer, comunicar e conectar-se com o seu público.
+                O verdadeiro poder do digital está no posicionamento e na forma como uma marca
+                comunica com o seu público - construído com identidade, consistência e narrativa.
               </p>
               <p>
-                Um bom posicionamento digital não é feito apenas de publicações bonitas ou de likes
-                acumulados. É construído a partir de identidade, consistência, narrativa e
-                propósito.
-              </p>
-              <p>
-                Ao longo da minha jornada, percebi que as marcas que se destacam são aquelas que
-                sabem o que representam, a quem falam e por que existem. É isso que as torna
-                reconhecíveis, memoráveis e relevantes.
-              </p>
-              <p>
-                O meu papel, enquanto estratega criativo, é ajudar cada cliente a descobrir o seu
-                lugar no digital e a ocupá-lo com força, coerência e autenticidade. Seja através de
-                conteúdo, branding, campanhas ou simplesmente de uma boa gestão de redes sociais,
-                tudo deve comunicar uma mesma verdade.
+                As marcas que se destacam sabem o que representam e a quem falam. O meu papel é
+                ajudar cada cliente a ocupar o seu lugar com força, coerência e autenticidade.
               </p>
               <p className="text-white font-semibold pt-1">
-                Posicionamento digital não é um fim em si, mas um ponto de partida para marcas que
-                querem marcar território, criar relações e gerar impacto.
+                Posicionamento digital é o ponto de partida para marcas que querem marcar
+                território, criar relações e gerar impacto.
               </p>
             </div>
           </div>

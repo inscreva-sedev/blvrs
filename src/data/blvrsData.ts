@@ -195,13 +195,31 @@ export const DEFAULT_PROJECTS: ProjectItem[] = [
     year: '2026',
     category: 'Conteúdos Digitais',
     mediaType: 'video',
-    image: '/images/service-postprod.jpg',
+    image: '/images/banner-blvrs-contactos.png',
     videoUrl: 'https://www.instagram.com/p/De9BI9vTLAp/',
+    videoOrientation: 'vertical',
     summary:
-      'Publicar todos os dias não significa estar a avançar. Conteúdo de autoridade sobre comunicação com intenção, estratégia e direcção clara para marcas que querem ser escolhidas.',
+      'Publicar todos os dias não significa avançar. Comunicação com intenção e direcção para marcas que querem ser escolhidas.',
     strategy:
-      'Pilar Conhecimento e Autoridade: um conteúdo deve atrair, outro criar confiança e outro transformar o interesse em vendas - cada publicação com propósito definido.',
-    deliverables: ['Instagram Reel Oficial', 'Roteiro Estratégico', 'Posicionamento de Marca'],
+      'Cada publicação cumpre um papel: atrair, gerar confiança e transformar interesse em vendas.',
+    deliverables: ['Instagram Reel', 'Roteiro Estratégico', 'Posicionamento'],
+    featured: true,
+  },
+  {
+    id: 'proj-daniela-elton',
+    title: 'Daniela & Elton - Filme de Casamento',
+    client: 'Daniela & Elton',
+    year: '2026',
+    category: 'Audiovisual',
+    mediaType: 'video',
+    image: '/images/hero-cinema.jpg',
+    videoUrl: 'https://www.instagram.com/p/DdTOEbnuA3-/',
+    videoOrientation: 'horizontal',
+    summary:
+      'Filme de casamento com emoção, detalhe e estética cinematográfica para memórias eternas.',
+    strategy:
+      'Cobertura audiovisual de eventos com narrativa emocional e captação pensada para reviver cada momento.',
+    deliverables: ['Filme de Casamento', 'Estética Cinematográfica', 'Pós-Produção'],
     featured: true,
   },
   {

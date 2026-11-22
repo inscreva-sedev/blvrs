@@ -68,6 +68,7 @@ interface AdminDashboardProps {
 
 const IMAGE_PRESETS = [
   { label: 'Estúdio Cinema (Hero)', url: '/images/hero-cinema.jpg' },
+  { label: 'Banner Reel Estratégia (BLVRS)', url: '/images/banner-blvrs-contactos.png' },
   { label: 'Produção Audiovisual', url: '/images/service-audiovisual.jpg' },
   { label: 'Estúdio Fotográfico', url: '/images/service-photography.jpg' },
   { label: 'Espaço & Equipamento (IM Fisio)', url: '/images/im-fisio-equipamento.jpg' },
@@ -119,6 +120,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
   const [image, setImage] = useState('/images/service-audiovisual.jpg')
   const [gallery, setGallery] = useState<string[]>([])
   const [videoUrl, setVideoUrl] = useState('')
+  const [videoOrientation, setVideoOrientation] = useState<'vertical' | 'horizontal'>('vertical')
   const [summary, setSummary] = useState('')
   const [strategy, setStrategy] = useState('')
   const [deliverablesRaw, setDeliverablesRaw] = useState('Vídeo Principal, Fotos de Campanha')
@@ -173,6 +175,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
     setImage('/images/service-audiovisual.jpg')
     setGallery([])
     setVideoUrl('')
+    setVideoOrientation('vertical')
     setSummary('')
     setStrategy('')
     setDeliverablesRaw('Vídeo Principal, Fotos de Campanha')
@@ -196,6 +199,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
     setImage(proj.image)
     setGallery(proj.gallery || [])
     setVideoUrl(proj.videoUrl || '')
+    setVideoOrientation(proj.videoOrientation || 'vertical')
     setSummary(proj.summary)
     setStrategy(proj.strategy)
     setDeliverablesRaw(proj.deliverables.join(', '))
@@ -245,6 +249,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
       image: optimizeMediaUrl(image.trim(), 1600) || '/images/hero-cinema.jpg',
       gallery: gallery.length > 0 ? gallery : undefined,
       videoUrl: videoUrl.trim() || undefined,
+      videoOrientation: videoUrl.trim() ? videoOrientation : undefined,
       summary: summary.trim(),
       strategy: strategy.trim() || 'Execução criativa alinhada ao posicionamento da marca.',
       deliverables: deliverablesRaw
@@ -975,7 +980,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                     />
                   </div>
 
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                     <input
                       type="text"
                       value={deliverablesRaw}
@@ -987,9 +992,19 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                       type="url"
                       value={videoUrl}
                       onChange={(e) => setVideoUrl(e.target.value)}
-                      placeholder="URL embed de vídeo (opcional)"
+                      placeholder="URL de vídeo (Instagram, YouTube, MP4)"
                       className="rounded-md border border-white/10 bg-[#0B0B0B] px-3 py-2 text-xs text-white focus:border-[#F36B21] focus:outline-none"
                     />
+                    <select
+                      value={videoOrientation}
+                      onChange={(e) =>
+                        setVideoOrientation(e.target.value as 'vertical' | 'horizontal')
+                      }
+                      className="rounded-md border border-white/10 bg-[#0B0B0B] px-3 py-2 text-xs text-white focus:border-[#F36B21] focus:outline-none"
+                    >
+                      <option value="vertical">Vídeo Vertical (9:16 Reel)</option>
+                      <option value="horizontal">Vídeo Horizontal (16:9)</option>
+                    </select>
                   </div>
 
                   <div className="flex justify-end gap-2">

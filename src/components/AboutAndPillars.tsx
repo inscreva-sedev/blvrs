@@ -21,23 +21,20 @@ export const AboutAndPillars: React.FC<AboutAndPillarsProps> = ({ config, onOpen
       <section id="sobre" className="bg-white text-[#0B0B0B] py-16 sm:py-24">
         <div className="mx-auto max-w-[1440px] px-4 sm:px-8">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
-            <Reveal className="lg:col-span-6 space-y-6">
+            <Reveal className="lg:col-span-6 space-y-5">
               <span className="text-[11px] font-bold uppercase tracking-[0.22em] text-[#F36B21]">
                 02. Sobre Nós
               </span>
               <h2 className="font-display text-3xl sm:text-5xl font-extrabold tracking-tight leading-[1.08] text-[#0B0B0B]">
-                Na intersecção entre comunicação, estratégia e produção audiovisual.
+                Comunicação, estratégia e produção audiovisual.
               </h2>
-              <p className="text-base text-[#333] leading-relaxed">
-                {config.shortDescription}
+              <p className="text-sm sm:text-base text-[#333] leading-relaxed">
+                A <strong className="text-[#0B0B0B]">BLVRS MEDIA</strong> cria conteúdos visuais e
+                estratégias para marcas, empresas e artistas comunicarem com intenção e clareza.
               </p>
-              <p className="text-base text-[#333] leading-relaxed">
-                Acreditamos que uma boa comunicação vai além da estética. Cada projecto deve ter
-                uma intenção, uma identidade e uma mensagem clara. A{' '}
-                <strong className="text-[#0B0B0B]">BLVRS MEDIA</strong> não pretende ser apenas uma
-                agência de publicação de conteúdos - o nosso foco está na criação, produção e
-                orientação de comunicação que valoriza marcas, fortalece a percepção do público e
-                constrói autoridade.
+              <p className="text-sm sm:text-base text-[#333] leading-relaxed">
+                Mais do que publicar, construímos percepção, fortalecemos identidades e geramos
+                autoridade no mercado.
               </p>
 
               <div className="pt-2 flex flex-wrap gap-3">
@@ -60,7 +57,9 @@ export const AboutAndPillars: React.FC<AboutAndPillarsProps> = ({ config, onOpen
             {/* Right Visual + Mission/Vision/Values */}
             <Reveal delayMs={140} className="lg:col-span-6 space-y-5">
               <div className="cinema-card-sheen relative h-72 sm:h-80 overflow-hidden rounded-xl bg-[#171717] group">
-                {playingVideo && parsedVideo ? (
+                {playingVideo &&
+                parsedVideo &&
+                !(parsedVideo.kind === 'iframe' && parsedVideo.provider === 'instagram') ? (
                   <div className="relative h-full w-full bg-black">
                     {parsedVideo.kind === 'iframe' ? (
                       <iframe
@@ -79,16 +78,6 @@ export const AboutAndPillars: React.FC<AboutAndPillarsProps> = ({ config, onOpen
                         playsInline
                         className="h-full w-full object-cover"
                       />
-                    )}
-                    {parsedVideo.kind === 'iframe' && parsedVideo.externalUrl && (
-                      <a
-                        href={parsedVideo.externalUrl}
-                        target="_blank"
-                        rel="noreferrer"
-                        className="absolute bottom-3 left-3 z-10 rounded-full bg-black/80 px-3 py-1 text-[11px] font-semibold text-white hover:bg-[#F36B21] transition-colors"
-                      >
-                        Abrir original
-                      </a>
                     )}
                     <button
                       type="button"
@@ -164,6 +153,54 @@ export const AboutAndPillars: React.FC<AboutAndPillarsProps> = ({ config, onOpen
           </div>
         </div>
       </section>
+
+      {/* Vertical 9:16 Modal for Instagram Reel in Sobre Nós */}
+      {playingVideo && parsedVideo?.kind === 'iframe' && parsedVideo.provider === 'instagram' && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/85 p-4 backdrop-blur-sm"
+          onClick={() => setPlayingVideo(false)}
+        >
+          <div
+            className="animate-modal relative w-full max-w-[390px] overflow-hidden rounded-2xl bg-[#171717] border border-white/15 shadow-2xl"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="flex items-center justify-between px-4 py-3 border-b border-white/10">
+              <span className="font-display text-xs font-bold uppercase tracking-widest text-[#F36B21]">
+                BLVRS MEDIA • Reel
+              </span>
+              <div className="flex items-center gap-3">
+                {parsedVideo.externalUrl && (
+                  <a
+                    href={parsedVideo.externalUrl}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="text-[11px] font-semibold text-[#A6A6A6] hover:text-white underline"
+                  >
+                    Instagram
+                  </a>
+                )}
+                <button
+                  type="button"
+                  onClick={() => setPlayingVideo(false)}
+                  aria-label="Fechar vídeo"
+                  className="flex h-7 w-7 items-center justify-center rounded-full bg-white/10 text-white hover:bg-[#F36B21] cursor-pointer"
+                >
+                  <X className="h-4 w-4" />
+                </button>
+              </div>
+            </div>
+            <div className="w-full h-[580px] max-h-[78vh] bg-black">
+              <iframe
+                src={parsedVideo.src}
+                title="Instagram Reel BLVRS MEDIA"
+                className="h-full w-full border-0"
+                allow="autoplay; fullscreen; picture-in-picture"
+                allowFullScreen
+              />
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Identidade Visual & Pilares de Conteúdo - Dark Editorial Band */}
       <section id="pilares" className="bg-[#171717] text-white py-16 sm:py-24 border-t border-white/10">

@@ -49,6 +49,7 @@ export interface ProjectItem {
   image: string
   gallery?: string[]
   videoUrl?: string
+  videoOrientation?: 'vertical' | 'horizontal'
   summary: string
   strategy: string
   deliverables: string[]

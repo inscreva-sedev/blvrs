@@ -133,7 +133,9 @@ export const PortfolioSection: React.FC<PortfolioSectionProps> = ({
                       src={optimizeMediaUrl(proj.image, 1400)}
                       alt={proj.title}
                       loading="lazy"
-                      className="h-full w-full object-cover object-center transition-transform duration-1000 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-105"
+                      className={`h-full w-full object-cover transition-transform duration-1000 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-105 ${
+                        proj.id === 'proj-reel-estrategia' ? 'object-top' : 'object-center'
+                      }`}
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-black/95 via-black/65 to-black/15" />
 
@@ -177,165 +179,316 @@ export const PortfolioSection: React.FC<PortfolioSectionProps> = ({
       {/* Project Case Study Modal */}
       {selectedProject && (
         <div
-          className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 p-4 backdrop-blur-sm"
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/85 p-4 backdrop-blur-sm"
           onClick={() => setSelectedProject(null)}
         >
-          <div
-            className="animate-modal relative w-full max-w-3xl max-h-[90vh] overflow-y-auto rounded-2xl bg-[#171717] text-white border border-white/15 shadow-2xl"
-            onClick={(e) => e.stopPropagation()}
-          >
-            <div className="relative h-64 sm:h-80 w-full bg-black">
-              {(() => {
-                const parsed = parseVideoUrl(selectedProject.videoUrl)
-                if (parsed?.kind === 'iframe') {
-                  return (
-                    <>
+          {(() => {
+            const parsed = parseVideoUrl(selectedProject.videoUrl)
+            const isVerticalReel =
+              parsed?.kind === 'iframe' &&
+              parsed.provider === 'instagram' &&
+              selectedProject.videoOrientation !== 'horizontal'
+            const isHorizontalInstagram =
+              parsed?.kind === 'iframe' &&
+              parsed.provider === 'instagram' &&
+              selectedProject.videoOrientation === 'horizontal'
+
+            if (isVerticalReel) {
+              return (
+                <div
+                  className="animate-modal relative flex flex-col md:flex-row w-full max-w-4xl max-h-[92vh] overflow-y-auto md:overflow-hidden rounded-2xl bg-[#171717] text-white border border-white/15 shadow-2xl"
+                  onClick={(e) => e.stopPropagation()}
+                >
+                  {/* Vertical 9:16 Reel Frame - Zero Scrim & Zero Overlap */}
+                  <div className="relative w-full md:w-[340px] lg:w-[370px] bg-black shrink-0 flex items-center justify-center">
+                    <div className="w-full h-[520px] md:h-[620px] max-h-[82vh]">
                       <iframe
                         src={parsed.src}
                         title={selectedProject.title}
-                        className="h-full w-full"
+                        className="h-full w-full border-0"
                         allow="autoplay; fullscreen; picture-in-picture"
                         allowFullScreen
                       />
+                    </div>
+                  </div>
+
+                  {/* Clean Concise Right Panel */}
+                  <div className="relative flex-1 p-6 sm:p-8 flex flex-col justify-between gap-6">
+                    <button
+                      type="button"
+                      onClick={() => setSelectedProject(null)}
+                      aria-label="Fechar projecto"
+                      className="absolute top-4 right-4 flex h-9 w-9 items-center justify-center rounded-full bg-white/10 text-white hover:bg-[#F36B21] transition-colors cursor-pointer"
+                    >
+                      <X className="h-5 w-5" />
+                    </button>
+
+                    <div className="space-y-5 pr-8">
+                      <div>
+                        <div className="flex flex-wrap items-center gap-2 text-xs font-semibold uppercase tracking-widest text-[#F36B21]">
+                          <span>{selectedProject.category}</span>
+                          <span className="text-[#A6A6A6]">•</span>
+                          <span className="text-[#A6A6A6]">{selectedProject.client}</span>
+                          <span className="text-[#A6A6A6]">•</span>
+                          <span className="text-[#A6A6A6]">{selectedProject.year}</span>
+                        </div>
+                        <h3 className="mt-2 font-display text-2xl font-extrabold leading-tight">
+                          {selectedProject.title}
+                        </h3>
+                      </div>
+
+                      <div className="space-y-2">
+                        <h4 className="font-display text-[11px] font-bold uppercase tracking-widest text-[#A6A6A6]">
+                          Resumo
+                        </h4>
+                        <p className="text-sm text-[#E5E5E5] leading-relaxed">
+                          {selectedProject.summary}
+                        </p>
+                      </div>
+
+                      <div className="space-y-2">
+                        <h4 className="font-display text-[11px] font-bold uppercase tracking-widest text-[#A6A6A6]">
+                          Estratégia
+                        </h4>
+                        <p className="text-sm text-[#E5E5E5] leading-relaxed">
+                          {selectedProject.strategy}
+                        </p>
+                      </div>
+
+                      {selectedProject.deliverables && (
+                        <div className="flex flex-wrap gap-2 pt-1">
+                          {selectedProject.deliverables.map((del) => (
+                            <span
+                              key={del}
+                              className="rounded-md border border-white/10 bg-[#0B0B0B] px-3 py-1 text-xs font-medium text-white"
+                            >
+                              {del}
+                            </span>
+                          ))}
+                        </div>
+                      )}
+                    </div>
+
+                    <div className="pt-4 border-t border-white/10 flex flex-wrap items-center justify-between gap-3">
                       {parsed.externalUrl && (
                         <a
                           href={parsed.externalUrl}
                           target="_blank"
                           rel="noreferrer"
-                          className="absolute bottom-3 left-3 z-10 rounded-full bg-black/80 px-3 py-1 text-[11px] font-semibold text-white hover:bg-[#F36B21] transition-colors"
+                          className="inline-flex items-center gap-1.5 text-xs font-semibold text-[#A6A6A6] hover:text-white underline underline-offset-4"
                         >
-                          Abrir vídeo original
+                          <span>Abrir no Instagram</span>
+                          <ArrowUpRight className="h-3.5 w-3.5" />
                         </a>
                       )}
-                    </>
-                  )
-                }
-                if (parsed?.kind === 'video') {
-                  return (
-                    <video
-                      src={parsed.src}
-                      poster={selectedProject.image}
-                      controls
-                      playsInline
-                      className="h-full w-full object-cover"
-                    />
-                  )
-                }
-                return (
-                  <img
-                    src={selectedProject.image}
-                    alt={selectedProject.title}
-                    className="h-full w-full object-cover"
-                  />
-                )
-              })()}
-              <div className="absolute inset-0 bg-gradient-to-t from-[#171717] via-transparent to-black/30 pointer-events-none" />
-              <button
-                type="button"
-                onClick={() => setSelectedProject(null)}
-                aria-label="Fechar projecto"
-                className="absolute top-4 right-4 flex h-9 w-9 items-center justify-center rounded-full bg-black/75 text-white hover:bg-[#F36B21] transition-colors cursor-pointer"
+                      <button
+                        type="button"
+                        onClick={() => {
+                          const srv = mapCategoryToService(selectedProject.category)
+                          const projName = selectedProject.title
+                          setSelectedProject(null)
+                          onRequestSimilar(srv, projName)
+                        }}
+                        className="rounded-[4px] bg-[#F36B21] px-5 py-2.5 font-display text-xs sm:text-sm font-semibold text-white hover:bg-[#dc5b14] cursor-pointer"
+                      >
+                        Quero um projecto semelhante
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              )
+            }
+
+            return (
+              <div
+                className="animate-modal relative w-full max-w-3xl max-h-[90vh] overflow-y-auto rounded-2xl bg-[#171717] text-white border border-white/15 shadow-2xl"
+                onClick={(e) => e.stopPropagation()}
               >
-                <X className="h-5 w-5" />
-              </button>
-            </div>
-
-            <div className="p-6 sm:p-8 space-y-6">
-              <div>
-                <div className="flex flex-wrap items-center gap-2 text-xs font-semibold uppercase tracking-widest text-[#F36B21]">
-                  <span>{selectedProject.category}</span>
-                  <span className="text-[#A6A6A6]">•</span>
-                  <span className="text-[#A6A6A6]">{selectedProject.client}</span>
-                  <span className="text-[#A6A6A6]">•</span>
-                  <span className="text-[#A6A6A6]">{selectedProject.year}</span>
-                </div>
-                <h3 className="mt-2 font-display text-2xl sm:text-3xl font-extrabold">
-                  {selectedProject.title}
-                </h3>
-              </div>
-
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div>
-                  <h4 className="font-display text-xs font-bold uppercase tracking-widest text-[#A6A6A6] mb-2">
-                    Visão Geral
-                  </h4>
-                  <p className="text-sm text-[#E5E5E5] leading-relaxed">
-                    {selectedProject.summary}
-                  </p>
-                </div>
-                <div>
-                  <h4 className="font-display text-xs font-bold uppercase tracking-widest text-[#A6A6A6] mb-2">
-                    Estratégia & Execução
-                  </h4>
-                  <p className="text-sm text-[#E5E5E5] leading-relaxed">
-                    {selectedProject.strategy}
-                  </p>
-                </div>
-              </div>
-
-              {selectedProject.deliverables && (
-                <div>
-                  <h4 className="font-display text-xs font-bold uppercase tracking-widest text-[#A6A6A6] mb-3">
-                    Entregáveis do Projecto
-                  </h4>
-                  <div className="flex flex-wrap gap-2">
-                    {selectedProject.deliverables.map((del) => (
-                      <span
-                        key={del}
-                        className="rounded-md border border-white/10 bg-[#0B0B0B] px-3 py-1.5 text-xs font-medium text-white"
-                      >
-                        {del}
+                {isHorizontalInstagram && parsed?.kind === 'iframe' ? (
+                  <>
+                    <div className="flex items-center justify-between px-5 py-3 border-b border-white/10 bg-[#111111]">
+                      <span className="font-display text-xs font-bold uppercase tracking-widest text-[#F36B21]">
+                        {selectedProject.client} • Vídeo Horizontal
                       </span>
-                    ))}
-                  </div>
-                </div>
-              )}
-
-              {selectedProject.gallery && selectedProject.gallery.length > 0 && (
-                <div>
-                  <h4 className="font-display text-xs font-bold uppercase tracking-widest text-[#A6A6A6] mb-3">
-                    Criativos da Campanha ({selectedProject.gallery.length})
-                  </h4>
-                  <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-                    {selectedProject.gallery.map((imgUrl, idx) => (
-                      <div
-                        key={imgUrl}
-                        className="overflow-hidden rounded-lg border border-white/10 bg-[#0B0B0B] aspect-[4/5]"
-                      >
-                        <img
-                          src={imgUrl}
-                          alt={`${selectedProject.title} - Peça ${idx + 1}`}
-                          className="h-full w-full object-contain hover:scale-105 transition-transform duration-300"
-                        />
+                      <div className="flex items-center gap-3">
+                        {parsed.externalUrl && (
+                          <a
+                            href={parsed.externalUrl}
+                            target="_blank"
+                            rel="noreferrer"
+                            className="inline-flex items-center gap-1 text-xs font-semibold text-[#A6A6A6] hover:text-white underline"
+                          >
+                            <span>Abrir no Instagram</span>
+                            <ArrowUpRight className="h-3.5 w-3.5" />
+                          </a>
+                        )}
+                        <button
+                          type="button"
+                          onClick={() => setSelectedProject(null)}
+                          aria-label="Fechar projecto"
+                          className="flex h-8 w-8 items-center justify-center rounded-full bg-white/10 text-white hover:bg-[#F36B21] transition-colors cursor-pointer"
+                        >
+                          <X className="h-4 w-4" />
+                        </button>
                       </div>
-                    ))}
+                    </div>
+                    <div className="w-full h-[360px] sm:h-[460px] bg-black">
+                      <iframe
+                        src={parsed.src}
+                        title={selectedProject.title}
+                        className="h-full w-full border-0"
+                        allow="autoplay; fullscreen; picture-in-picture"
+                        allowFullScreen
+                      />
+                    </div>
+                  </>
+                ) : (
+                  <div className="relative h-64 sm:h-80 w-full bg-black">
+                    {parsed?.kind === 'iframe' ? (
+                      <>
+                        <iframe
+                          src={parsed.src}
+                          title={selectedProject.title}
+                          className="h-full w-full"
+                          allow="autoplay; fullscreen; picture-in-picture"
+                          allowFullScreen
+                        />
+                        {parsed.externalUrl && (
+                          <a
+                            href={parsed.externalUrl}
+                            target="_blank"
+                            rel="noreferrer"
+                            className="absolute bottom-3 left-3 z-10 rounded-full bg-black/80 px-3 py-1 text-[11px] font-semibold text-white hover:bg-[#F36B21] transition-colors"
+                          >
+                            Abrir vídeo original
+                          </a>
+                        )}
+                      </>
+                    ) : parsed?.kind === 'video' ? (
+                      <video
+                        src={parsed.src}
+                        poster={selectedProject.image}
+                        controls
+                        playsInline
+                        className="h-full w-full object-cover"
+                      />
+                    ) : (
+                      <img
+                        src={selectedProject.image}
+                        alt={selectedProject.title}
+                        className="h-full w-full object-cover"
+                      />
+                    )}
+                    <div className="absolute inset-0 bg-gradient-to-t from-[#171717] via-transparent to-black/30 pointer-events-none" />
+                    <button
+                      type="button"
+                      onClick={() => setSelectedProject(null)}
+                      aria-label="Fechar projecto"
+                      className="absolute top-4 right-4 flex h-9 w-9 items-center justify-center rounded-full bg-black/75 text-white hover:bg-[#F36B21] transition-colors cursor-pointer"
+                    >
+                      <X className="h-5 w-5" />
+                    </button>
+                  </div>
+                )}
+
+                <div className="p-6 sm:p-8 space-y-6">
+                  <div>
+                    <div className="flex flex-wrap items-center gap-2 text-xs font-semibold uppercase tracking-widest text-[#F36B21]">
+                      <span>{selectedProject.category}</span>
+                      <span className="text-[#A6A6A6]">•</span>
+                      <span className="text-[#A6A6A6]">{selectedProject.client}</span>
+                      <span className="text-[#A6A6A6]">•</span>
+                      <span className="text-[#A6A6A6]">{selectedProject.year}</span>
+                    </div>
+                    <h3 className="mt-2 font-display text-2xl sm:text-3xl font-extrabold">
+                      {selectedProject.title}
+                    </h3>
+                  </div>
+
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                      <h4 className="font-display text-xs font-bold uppercase tracking-widest text-[#A6A6A6] mb-2">
+                        Visão Geral
+                      </h4>
+                      <p className="text-sm text-[#E5E5E5] leading-relaxed">
+                        {selectedProject.summary}
+                      </p>
+                    </div>
+                    <div>
+                      <h4 className="font-display text-xs font-bold uppercase tracking-widest text-[#A6A6A6] mb-2">
+                        Estratégia & Execução
+                      </h4>
+                      <p className="text-sm text-[#E5E5E5] leading-relaxed">
+                        {selectedProject.strategy}
+                      </p>
+                    </div>
+                  </div>
+
+                  {selectedProject.deliverables && (
+                    <div>
+                      <h4 className="font-display text-xs font-bold uppercase tracking-widest text-[#A6A6A6] mb-3">
+                        Entregáveis do Projecto
+                      </h4>
+                      <div className="flex flex-wrap gap-2">
+                        {selectedProject.deliverables.map((del) => (
+                          <span
+                            key={del}
+                            className="rounded-md border border-white/10 bg-[#0B0B0B] px-3 py-1.5 text-xs font-medium text-white"
+                          >
+                            {del}
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+
+                  {selectedProject.gallery && selectedProject.gallery.length > 0 && (
+                    <div>
+                      <h4 className="font-display text-xs font-bold uppercase tracking-widest text-[#A6A6A6] mb-3">
+                        Criativos da Campanha ({selectedProject.gallery.length})
+                      </h4>
+                      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                        {selectedProject.gallery.map((imgUrl, idx) => (
+                          <div
+                            key={imgUrl}
+                            className="overflow-hidden rounded-lg border border-white/10 bg-[#0B0B0B] aspect-[4/5]"
+                          >
+                            <img
+                              src={imgUrl}
+                              alt={`${selectedProject.title} - Peça ${idx + 1}`}
+                              className="h-full w-full object-contain hover:scale-105 transition-transform duration-300"
+                            />
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+
+                  <div className="pt-4 border-t border-white/10 flex flex-wrap items-center justify-end gap-3">
+                    <button
+                      type="button"
+                      onClick={() => setSelectedProject(null)}
+                      className="rounded-[4px] border border-white/15 px-5 py-2.5 text-sm font-semibold text-white hover:bg-white/10 cursor-pointer"
+                    >
+                      Fechar
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        const srv = mapCategoryToService(selectedProject.category)
+                        const projName = selectedProject.title
+                        setSelectedProject(null)
+                        onRequestSimilar(srv, projName)
+                      }}
+                      className="rounded-[4px] bg-[#F36B21] px-6 py-2.5 font-display text-sm font-semibold text-white hover:bg-[#dc5b14] cursor-pointer"
+                    >
+                      Quero um projecto semelhante
+                    </button>
                   </div>
                 </div>
-              )}
-
-              <div className="pt-4 border-t border-white/10 flex flex-wrap items-center justify-end gap-3">
-                <button
-                  type="button"
-                  onClick={() => setSelectedProject(null)}
-                  className="rounded-[4px] border border-white/15 px-5 py-2.5 text-sm font-semibold text-white hover:bg-white/10 cursor-pointer"
-                >
-                  Fechar
-                </button>
-                <button
-                  type="button"
-                  onClick={() => {
-                    const srv = mapCategoryToService(selectedProject.category)
-                    const projName = selectedProject.title
-                    setSelectedProject(null)
-                    onRequestSimilar(srv, projName)
-                  }}
-                  className="rounded-[4px] bg-[#F36B21] px-6 py-2.5 font-display text-sm font-semibold text-white hover:bg-[#dc5b14] cursor-pointer"
-                >
-                  Quero um projecto semelhante
-                </button>
               </div>
-            </div>
-          </div>
+            )
+          })()}
         </div>
       )}
     </section>

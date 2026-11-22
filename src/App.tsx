@@ -35,8 +35,8 @@ import {
 } from './types'
 
 const STORAGE_KEYS = {
-  projects: 'blvrs_projects_v10',
-  config: 'blvrs_config_v3',
+  projects: 'blvrs_projects_v11',
+  config: 'blvrs_config_v4',
   quotes: 'blvrs_quotes_v1',
   heroSlides: 'blvrs_hero_v1',
   services: 'blvrs_services_v1',

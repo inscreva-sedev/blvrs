@@ -19,7 +19,7 @@ export const DEFAULT_SITE_CONFIG: SiteConfig = {
   phone: '+258 87 408 7213',
   whatsappNumber: '258844756340',
   whatsappDisplay: '+258 84 475 6340',
-  email: 'blvrsbookings@gmail.com',
+  email: 'comercial@blvrsmedia.com',
   location: 'Maputo, Moçambique',
   socials: [
     {
@@ -195,7 +195,7 @@ export const DEFAULT_PROJECTS: ProjectItem[] = [
     year: '2026',
     category: 'Conteúdos Digitais',
     mediaType: 'video',
-    image: '/images/banner-blvrs-contactos.png',
+    image: '/images/banner-blvrs-contactos2.png',
     videoUrl: 'https://www.instagram.com/p/De9BI9vTLAp/',
     videoOrientation: 'vertical',
     summary:

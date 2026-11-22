@@ -68,7 +68,8 @@ interface AdminDashboardProps {
 
 const IMAGE_PRESETS = [
   { label: 'Estúdio Cinema (Hero)', url: '/images/hero-cinema.jpg' },
-  { label: 'Banner Reel Estratégia (BLVRS)', url: '/images/banner-blvrs-contactos.png' },
+  { label: 'Banner Reel Estratégia (Limpo)', url: '/images/banner-blvrs-contactos2.png' },
+  { label: 'Banner Reel Estratégia (Com Contactos)', url: '/images/banner-blvrs-contactos.png' },
   { label: 'Produção Audiovisual', url: '/images/service-audiovisual.jpg' },
   { label: 'Estúdio Fotográfico', url: '/images/service-photography.jpg' },
   { label: 'Espaço & Equipamento (IM Fisio)', url: '/images/im-fisio-equipamento.jpg' },

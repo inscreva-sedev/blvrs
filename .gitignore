@@ -1,0 +1,15 @@
+# Dependencies & Build
+node_modules
+dist
+.vercel
+
+# Environment variables (never commit secrets)
+.env
+.env.local
+.env.*.local
+
+# Logs & OS
+*.log
+*.tsbuildinfo
+.DS_Store
+Thumbs.db

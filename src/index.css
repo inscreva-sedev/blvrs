@@ -1,0 +1,155 @@
+@import "tailwindcss";
+
+@layer base {
+  :root {
+    --blvrs-black: #0B0B0B;
+    --blvrs-surface: #171717;
+    --blvrs-white: #FFFFFF;
+    --blvrs-gray-light: #F2F2F2;
+    --blvrs-gray-mid: #A6A6A6;
+    --blvrs-orange: #F36B21;
+  }
+
+  html {
+    scroll-behavior: smooth;
+    font-family: 'Inter', 'Manrope', system-ui, -apple-system, sans-serif;
+    background-color: #0B0B0B;
+    color: #FFFFFF;
+  }
+
+  h1, h2, h3, .font-display {
+    font-family: 'Montserrat', 'Manrope', system-ui, sans-serif;
+  }
+}
+
+/* Hide scrollbars cleanly for Tesla-style horizontal showcase carousels */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+/* Mega-menu smooth curtain drop */
+@keyframes fadeSlideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-mega-menu {
+  animation: fadeSlideDown 0.24s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+/* Modal focal lens reveal */
+@keyframes modalReveal {
+  from {
+    opacity: 0;
+    transform: scale(0.965) translateY(12px);
+    filter: blur(4px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+    filter: blur(0);
+  }
+}
+
+.animate-modal {
+  animation: modalReveal 0.32s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+/* Ken Burns slow 35mm cinema motion for active Hero slides */
+@keyframes kenBurns {
+  0% {
+    transform: scale(1.0) translate3d(0, 0, 0);
+  }
+  50% {
+    transform: scale(1.06) translate3d(-1%, -0.6%, 0);
+  }
+  100% {
+    transform: scale(1.02) translate3d(0.6%, 0.4%, 0);
+  }
+}
+
+.animate-ken-burns {
+  animation: kenBurns 16s ease-in-out infinite alternate;
+  will-change: transform;
+}
+
+/* Staggered cinema focus-pull text reveal */
+@keyframes cinemaFocusReveal {
+  0% {
+    opacity: 0;
+    transform: translateY(20px);
+    filter: blur(6px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+    filter: blur(0);
+  }
+}
+
+.animate-cinema-reveal {
+  opacity: 0;
+  animation: cinemaFocusReveal 0.85s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+.cinema-delay-1 {
+  animation-delay: 80ms;
+}
+.cinema-delay-2 {
+  animation-delay: 180ms;
+}
+.cinema-delay-3 {
+  animation-delay: 280ms;
+}
+.cinema-delay-4 {
+  animation-delay: 380ms;
+}
+
+/* Subtle cinema light-sweep on hover for showcase cards */
+.cinema-card-sheen {
+  position: relative;
+}
+.cinema-card-sheen::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(
+    115deg,
+    transparent 30%,
+    rgba(243, 107, 33, 0.08) 48%,
+    rgba(255, 255, 255, 0.09) 50%,
+    transparent 65%
+  );
+  transform: translateX(-120%);
+  transition: transform 0.85s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.cinema-card-sheen:hover::after {
+  transform: translateX(120%);
+}
+
+/* Respect user reduced-motion preferences */
+@media (prefers-reduced-motion: reduce) {
+  .animate-ken-burns,
+  .animate-cinema-reveal,
+  .animate-modal,
+  .animate-mega-menu {
+    animation: none !important;
+    opacity: 1 !important;
+    transform: none !important;
+    filter: none !important;
+  }
+  .cinema-card-sheen::after {
+    display: none;
+  }
+}

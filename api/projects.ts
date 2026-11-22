@@ -1,7 +1,9 @@
 import { getDatabase } from './_lib/mongodb'
+import { verifyAdminToken } from './_lib/auth'
 
 interface ApiRequest {
   method?: string
+  headers?: Record<string, string | string[] | undefined>
   query?: Record<string, string | string[] | undefined>
   body?: Record<string, unknown>
 }
@@ -22,6 +24,11 @@ export default async function handler(req: ApiRequest, res: ApiResponse) {
         .sort({ createdAt: -1 })
         .toArray()
       res.status(200).json({ projects: items })
+      return
+    }
+
+    if (!verifyAdminToken(req)) {
+      res.status(401).json({ error: 'Unauthorized: admin session required' })
       return
     }
 

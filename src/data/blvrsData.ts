@@ -14,6 +14,8 @@ export const DEFAULT_SITE_CONFIG: SiteConfig = {
   positioning: 'Conteúdo que gera percepção. Estratégia que cria autoridade.',
   shortDescription:
     'A BLVRS MEDIA é uma agência criativa e de comunicação especializada em produção audiovisual, fotografia, branding, direcção criativa e desenvolvimento de estratégias de comunicação para marcas, empresas, artistas e projectos.',
+  aboutImage: '/images/hero-branding.jpg',
+  aboutVideoUrl: 'https://www.instagram.com/p/De9BI9vTLAp/',
   phone: '+258 87 408 7213',
   whatsappNumber: '258844756340',
   whatsappDisplay: '+258 84 475 6340',
@@ -186,6 +188,22 @@ export const SERVICES_DATA: ServiceItem[] = [
 ]
 
 export const DEFAULT_PROJECTS: ProjectItem[] = [
+  {
+    id: 'proj-reel-estrategia',
+    title: 'Publicar com Estratégia - Reel Oficial BLVRS MEDIA',
+    client: 'BLVRS MEDIA',
+    year: '2026',
+    category: 'Conteúdos Digitais',
+    mediaType: 'video',
+    image: '/images/service-postprod.jpg',
+    videoUrl: 'https://www.instagram.com/p/De9BI9vTLAp/',
+    summary:
+      'Publicar todos os dias não significa estar a avançar. Conteúdo de autoridade sobre comunicação com intenção, estratégia e direcção clara para marcas que querem ser escolhidas.',
+    strategy:
+      'Pilar Conhecimento e Autoridade: um conteúdo deve atrair, outro criar confiança e outro transformar o interesse em vendas - cada publicação com propósito definido.',
+    deliverables: ['Instagram Reel Oficial', 'Roteiro Estratégico', 'Posicionamento de Marca'],
+    featured: true,
+  },
   {
     id: 'proj-real-chicken-village',
     title: 'Campanha Digital & Identidade - Chicken Village',

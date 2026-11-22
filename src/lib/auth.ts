@@ -35,6 +35,12 @@ export function logoutAdmin(): void {
   }
 }
 
+export function getAuthHeaders(): Record<string, string> {
+  const session = getAdminSession()
+  if (!session?.token) return {}
+  return { Authorization: `Bearer ${session.token}` }
+}
+
 export async function loginAdmin(email: string, password: string): Promise<AdminSession> {
   const normalizedEmail = email.trim().toLowerCase()
 

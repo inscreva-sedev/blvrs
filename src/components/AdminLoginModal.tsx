@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { Lock, Eye, EyeOff, X, ShieldCheck } from 'lucide-react'
+import { Lock, Eye, EyeOff, X } from 'lucide-react'
 import { AdminSession, loginAdmin } from '../lib/auth'
 
 interface AdminLoginModalProps {
@@ -54,13 +54,13 @@ export const AdminLoginModal: React.FC<AdminLoginModalProps> = ({
           <X className="h-5 w-5" />
         </button>
 
-        <div className="mb-6 space-y-2">
-          <div className="inline-flex h-11 w-11 items-center justify-center rounded-xl bg-[#F36B21]/15 border border-[#F36B21]/30 text-[#F36B21]">
-            <ShieldCheck className="h-6 w-6" />
+        <div className="mb-6 space-y-3">
+          <div className="inline-flex items-center rounded-xl bg-white px-3 py-1.5 shadow-sm">
+            <img src="/blvrs-logo.png" alt="BLVRS MEDIA" className="h-9 w-auto object-contain" />
           </div>
           <div>
             <span className="text-[11px] font-bold uppercase tracking-[0.22em] text-[#F36B21]">
-              BLVRS MEDIA • Área Restrita
+              Área Restrita
             </span>
             <h2 className="mt-1 font-display text-2xl font-extrabold">Painel Administrativo</h2>
             <p className="mt-1 text-xs text-[#A6A6A6]">

@@ -1,8 +1,9 @@
-import React from 'react'
-import { Target, Eye, Compass, Calendar, Layers } from 'lucide-react'
+import React, { useState } from 'react'
+import { Target, Eye, Compass, Calendar, Layers, Play, X } from 'lucide-react'
 import { CONTENT_PILLARS } from '../data/blvrsData'
 import { SiteConfig } from '../types'
 import { Reveal } from './Reveal'
+import { parseVideoUrl } from '../lib/video'
 
 interface AboutAndPillarsProps {
   config: SiteConfig
@@ -10,6 +11,10 @@ interface AboutAndPillarsProps {
 }
 
 export const AboutAndPillars: React.FC<AboutAndPillarsProps> = ({ config, onOpenQuote }) => {
+  const [playingVideo, setPlayingVideo] = useState(false)
+  const parsedVideo = parseVideoUrl(config.aboutVideoUrl)
+  const mediaPoster = config.aboutImage || '/images/hero-branding.jpg'
+
   return (
     <>
       {/* 02. Sobre Nós - High-Contrast White Editorial Section */}
@@ -55,20 +60,76 @@ export const AboutAndPillars: React.FC<AboutAndPillarsProps> = ({ config, onOpen
             {/* Right Visual + Mission/Vision/Values */}
             <Reveal delayMs={140} className="lg:col-span-6 space-y-5">
               <div className="cinema-card-sheen relative h-72 sm:h-80 overflow-hidden rounded-xl bg-[#171717] group">
-                <img
-                  src={config.aboutImage || '/images/hero-branding.jpg'}
-                  alt="Direcção criativa BLVRS MEDIA"
-                  className="h-full w-full object-cover transition-transform duration-1000 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-105"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/15 to-transparent" />
-                <div className="absolute bottom-5 left-6 right-6 text-white">
-                  <p className="text-[11px] font-bold uppercase tracking-[0.2em] text-[#F36B21]">
-                    Posicionamento Institucional
-                  </p>
-                  <p className="mt-1 font-display text-lg sm:text-xl font-bold">
-                    {config.positioning}
-                  </p>
-                </div>
+                {playingVideo && parsedVideo ? (
+                  <div className="relative h-full w-full bg-black">
+                    {parsedVideo.kind === 'iframe' ? (
+                      <iframe
+                        src={parsedVideo.src}
+                        title="Vídeo Institucional BLVRS MEDIA"
+                        className="h-full w-full"
+                        allow="autoplay; fullscreen; picture-in-picture"
+                        allowFullScreen
+                      />
+                    ) : (
+                      <video
+                        src={parsedVideo.src}
+                        poster={mediaPoster}
+                        controls
+                        autoPlay
+                        playsInline
+                        className="h-full w-full object-cover"
+                      />
+                    )}
+                    {parsedVideo.kind === 'iframe' && parsedVideo.externalUrl && (
+                      <a
+                        href={parsedVideo.externalUrl}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="absolute bottom-3 left-3 z-10 rounded-full bg-black/80 px-3 py-1 text-[11px] font-semibold text-white hover:bg-[#F36B21] transition-colors"
+                      >
+                        Abrir original
+                      </a>
+                    )}
+                    <button
+                      type="button"
+                      onClick={() => setPlayingVideo(false)}
+                      aria-label="Voltar para imagem"
+                      className="absolute top-3 right-3 z-10 flex h-8 w-8 items-center justify-center rounded-full bg-black/75 text-white hover:bg-[#F36B21] transition-colors cursor-pointer"
+                    >
+                      <X className="h-4 w-4" />
+                    </button>
+                  </div>
+                ) : (
+                  <>
+                    <img
+                      src={mediaPoster}
+                      alt="Direcção criativa BLVRS MEDIA"
+                      className="h-full w-full object-cover transition-transform duration-1000 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-105"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
+
+                    {parsedVideo && (
+                      <button
+                        type="button"
+                        onClick={() => setPlayingVideo(true)}
+                        aria-label="Reproduzir vídeo institucional"
+                        className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 flex items-center gap-2.5 rounded-full bg-[#F36B21]/95 px-5 py-3 font-display text-xs sm:text-sm font-bold text-white shadow-2xl backdrop-blur-md transition-transform duration-300 hover:scale-105 hover:bg-[#F36B21] cursor-pointer"
+                      >
+                        <Play className="h-4 w-4 fill-white" />
+                        <span>Ver Vídeo</span>
+                      </button>
+                    )}
+
+                    <div className="absolute bottom-5 left-6 right-6 text-white pointer-events-none">
+                      <p className="text-[11px] font-bold uppercase tracking-[0.2em] text-[#F36B21]">
+                        Posicionamento Institucional
+                      </p>
+                      <p className="mt-1 font-display text-lg sm:text-xl font-bold">
+                        {config.positioning}
+                      </p>
+                    </div>
+                  </>
+                )}
               </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">

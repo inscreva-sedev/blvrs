@@ -93,6 +93,7 @@ export interface SiteConfig {
   positioning: string
   shortDescription: string
   aboutImage?: string
+  aboutVideoUrl?: string
   phone: string
   whatsappNumber: string
   whatsappDisplay: string

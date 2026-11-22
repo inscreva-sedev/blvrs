@@ -1,7 +1,9 @@
 import crypto from 'node:crypto'
+import { verifyAdminToken } from '../_lib/auth'
 
 interface SignRequest {
   method?: string
+  headers?: Record<string, string | string[] | undefined>
   body?: { folder?: string }
 }
 
@@ -12,7 +14,7 @@ interface SignResponse {
 
 /**
  * Serverless endpoint to generate a Cloudinary upload signature using CLOUDINARY_API_SECRET.
- * Secrets stay strictly on the server and are never bundled into client assets.
+ * Protected by admin Bearer token so only authenticated admins can sign uploads.
  */
 export default function handler(req: SignRequest, res: SignResponse) {
   if (req.method !== 'POST') {
@@ -20,20 +22,17 @@ export default function handler(req: SignRequest, res: SignResponse) {
     return
   }
 
+  if (!verifyAdminToken(req)) {
+    res.status(401).json({ error: 'Unauthorized: admin session required' })
+    return
+  }
+
   const cloudName = process.env.CLOUDINARY_CLOUD_NAME
   const apiSecret = process.env.CLOUDINARY_API_SECRET
   const apiKey = process.env.CLOUDINARY_API_KEY
 
-  if (!cloudName || !apiSecret) {
+  if (!cloudName || !apiSecret || !apiKey) {
     res.status(500).json({ error: 'Cloudinary server environment variables are missing.' })
-    return
-  }
-
-  if (!apiKey) {
-    res.status(400).json({
-      error:
-        'CLOUDINARY_API_KEY is required on the server for signed uploads, or set VITE_CLOUDINARY_UPLOAD_PRESET for unsigned uploads.',
-    })
     return
   }
 

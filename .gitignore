@@ -8,8 +8,9 @@ dist
 .env.local
 .env.*.local
 
-# Logs & OS
+# Logs, Internal Briefings & OS
 *.log
 *.tsbuildinfo
+*.pdf
 .DS_Store
 Thumbs.db

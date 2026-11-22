@@ -66,7 +66,7 @@ export const Navbar: React.FC<NavbarProps> = ({
         }`}
       >
         <div className="mx-auto flex h-14 max-w-[1440px] items-center justify-between px-4 sm:px-8">
-          {/* BLVRS MEDIA Wordmark (Tesla-inspired geometric spaced branding) */}
+          {/* Official BLVRS MEDIA Logo */}
           <a
             href="#inicio"
             onClick={(e) => {
@@ -76,12 +76,16 @@ export const Navbar: React.FC<NavbarProps> = ({
             className="flex items-center gap-2.5 group focus:outline-none"
             aria-label="BLVRS MEDIA - Página inicial"
           >
-            <span className="flex h-7 w-7 items-center justify-center rounded-md bg-[#0B0B0B] text-white border border-white/15">
-              <span className="font-display text-xs font-extrabold tracking-tight">B</span>
-              <span className="ml-0.5 h-1.5 w-1.5 rounded-full bg-[#F36B21]" />
-            </span>
-            <span className="font-display text-[13px] sm:text-sm font-extrabold tracking-[0.28em] uppercase">
-              BLVRS<span className="font-semibold opacity-75 ml-1.5">MEDIA</span>
+            <span
+              className={`inline-flex items-center rounded-lg px-2 py-0.5 transition-all duration-300 ${
+                isLightBar ? 'bg-transparent' : 'bg-white/95 shadow-sm'
+              }`}
+            >
+              <img
+                src="/blvrs-logo.png"
+                alt="BLVRS MEDIA"
+                className="h-9 w-auto object-contain"
+              />
             </span>
           </a>
 

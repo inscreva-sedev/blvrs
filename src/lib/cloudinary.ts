@@ -1,3 +1,5 @@
+import { getAuthHeaders } from './auth'
+
 export const CLOUDINARY_CLOUD_NAME =
   import.meta.env.VITE_CLOUDINARY_CLOUD_NAME || 'dnvnftvky'
 
@@ -89,7 +91,10 @@ export async function uploadMediaAsset(
     } else {
       const signRes = await fetch('/api/cloudinary/sign', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: {
+          'Content-Type': 'application/json',
+          ...getAuthHeaders(),
+        },
         body: JSON.stringify({ folder }),
       })
 

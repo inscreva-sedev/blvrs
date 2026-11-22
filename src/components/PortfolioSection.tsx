@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import { Play, Camera, Sparkles, X, ArrowUpRight, Layers } from 'lucide-react'
 import { PortfolioCategory, ProjectItem, ServiceCategory } from '../types'
 import { optimizeMediaUrl } from '../lib/cloudinary'
+import { parseVideoUrl } from '../lib/video'
 import { Reveal } from './Reveal'
 
 interface PortfolioSectionProps {
@@ -184,20 +185,50 @@ export const PortfolioSection: React.FC<PortfolioSectionProps> = ({
             onClick={(e) => e.stopPropagation()}
           >
             <div className="relative h-64 sm:h-80 w-full bg-black">
-              {selectedProject.videoUrl ? (
-                <iframe
-                  src={selectedProject.videoUrl}
-                  title={selectedProject.title}
-                  className="h-full w-full"
-                  allowFullScreen
-                />
-              ) : (
-                <img
-                  src={selectedProject.image}
-                  alt={selectedProject.title}
-                  className="h-full w-full object-cover"
-                />
-              )}
+              {(() => {
+                const parsed = parseVideoUrl(selectedProject.videoUrl)
+                if (parsed?.kind === 'iframe') {
+                  return (
+                    <>
+                      <iframe
+                        src={parsed.src}
+                        title={selectedProject.title}
+                        className="h-full w-full"
+                        allow="autoplay; fullscreen; picture-in-picture"
+                        allowFullScreen
+                      />
+                      {parsed.externalUrl && (
+                        <a
+                          href={parsed.externalUrl}
+                          target="_blank"
+                          rel="noreferrer"
+                          className="absolute bottom-3 left-3 z-10 rounded-full bg-black/80 px-3 py-1 text-[11px] font-semibold text-white hover:bg-[#F36B21] transition-colors"
+                        >
+                          Abrir vídeo original
+                        </a>
+                      )}
+                    </>
+                  )
+                }
+                if (parsed?.kind === 'video') {
+                  return (
+                    <video
+                      src={parsed.src}
+                      poster={selectedProject.image}
+                      controls
+                      playsInline
+                      className="h-full w-full object-cover"
+                    />
+                  )
+                }
+                return (
+                  <img
+                    src={selectedProject.image}
+                    alt={selectedProject.title}
+                    className="h-full w-full object-cover"
+                  />
+                )
+              })()}
               <div className="absolute inset-0 bg-gradient-to-t from-[#171717] via-transparent to-black/30 pointer-events-none" />
               <button
                 type="button"

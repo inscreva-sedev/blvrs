@@ -12,7 +12,7 @@ import { AdminDashboard } from './components/AdminDashboard'
 import { AdminLoginModal } from './components/AdminLoginModal'
 import { FloatingBar } from './components/FloatingBar'
 import { ScrollProgress } from './components/ScrollProgress'
-import { AdminSession, getAdminSession, logoutAdmin } from './lib/auth'
+import { AdminSession, getAdminSession, getAuthHeaders, logoutAdmin } from './lib/auth'
 import {
   CLIENT_CREATIVES,
   CLIENT_LOGOS,
@@ -34,8 +34,8 @@ import {
 } from './types'
 
 const STORAGE_KEYS = {
-  projects: 'blvrs_projects_v6',
-  config: 'blvrs_config_v2',
+  projects: 'blvrs_projects_v7',
+  config: 'blvrs_config_v3',
   quotes: 'blvrs_quotes_v1',
   heroSlides: 'blvrs_hero_v1',
   services: 'blvrs_services_v1',
@@ -125,15 +125,14 @@ export function App() {
     localStorage.setItem(STORAGE_KEYS.quotes, JSON.stringify(quotes))
   }, [quotes])
 
-  // Sync with MongoDB API endpoints when deployed with serverless backend
+  // Sync public content & projects with MongoDB API endpoints when deployed
   useEffect(() => {
     let active = true
-    async function hydrateFromApi() {
+    async function hydratePublicFromApi() {
       try {
-        const [projRes, cfgRes, quotesRes] = await Promise.all([
+        const [projRes, cfgRes] = await Promise.all([
           fetch('/api/projects'),
           fetch('/api/config'),
-          fetch('/api/quotes'),
         ])
         if (!active) return
 
@@ -145,25 +144,55 @@ export function App() {
         }
         if (cfgRes.ok) {
           const data = await cfgRes.json()
-          if (data.config) {
-            setConfig(data.config)
-          }
-        }
-        if (quotesRes.ok) {
-          const data = await quotesRes.json()
-          if (Array.isArray(data.quotes) && data.quotes.length > 0) {
-            setQuotes(data.quotes)
+          const bundle = data.bundle || data.config
+          if (bundle) {
+            if (bundle.config) setConfig(bundle.config)
+            else if (bundle.brandName) setConfig(bundle)
+            if (Array.isArray(bundle.heroSlides) && bundle.heroSlides.length > 0) {
+              setHeroSlides(bundle.heroSlides)
+            }
+            if (Array.isArray(bundle.services) && bundle.services.length > 0) {
+              setServices(bundle.services)
+            }
+            if (Array.isArray(bundle.clients) && bundle.clients.length > 0) {
+              setClients(bundle.clients)
+            }
+            if (Array.isArray(bundle.clientCreatives) && bundle.clientCreatives.length > 0) {
+              setClientCreatives(bundle.clientCreatives)
+            }
           }
         }
       } catch {
         // Local/static preview mode gracefully uses localStorage
       }
     }
-    hydrateFromApi()
+    hydratePublicFromApi()
     return () => {
       active = false
     }
   }, [])
+
+  // Fetch protected CRM quotes only when admin session is active
+  useEffect(() => {
+    if (!adminSession?.token) return
+    let active = true
+    async function hydrateQuotes() {
+      try {
+        const res = await fetch('/api/quotes', { headers: getAuthHeaders() })
+        if (!active || !res.ok) return
+        const data = await res.json()
+        if (Array.isArray(data.quotes) && data.quotes.length > 0) {
+          setQuotes(data.quotes)
+        }
+      } catch {
+        // ignore in offline/static mode
+      }
+    }
+    hydrateQuotes()
+    return () => {
+      active = false
+    }
+  }, [adminSession?.token])
 
   const openQuoteModal = (service?: ServiceCategory, note?: string) => {
     setQuoteService(service)
@@ -178,6 +207,30 @@ export function App() {
     }
   }
 
+  const persistBundle = (overrides: {
+    config?: SiteConfig
+    heroSlides?: HeroSlide[]
+    services?: ServiceItem[]
+    clients?: ClientLogoItem[]
+    clientCreatives?: ClientCreativeItem[]
+  }) => {
+    const bundle = {
+      config: overrides.config ?? config,
+      heroSlides: overrides.heroSlides ?? heroSlides,
+      services: overrides.services ?? services,
+      clients: overrides.clients ?? clients,
+      clientCreatives: overrides.clientCreatives ?? clientCreatives,
+    }
+    fetch('/api/config', {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+        ...getAuthHeaders(),
+      },
+      body: JSON.stringify(bundle),
+    }).catch(() => {})
+  }
+
   const handleQuoteSubmitted = (quote: QuoteSubmission) => {
     setQuotes((prev) => [quote, ...prev])
     fetch('/api/quotes', {
@@ -187,11 +240,32 @@ export function App() {
     }).catch(() => {})
   }
 
+  const handleUpdateQuotes = (nextQuotes: QuoteSubmission[]) => {
+    // Persist changed quote status when updated from Admin CRM
+    nextQuotes.forEach((nextQ) => {
+      const prevQ = quotes.find((q) => q.id === nextQ.id)
+      if (prevQ && prevQ.status !== nextQ.status) {
+        fetch('/api/quotes', {
+          method: 'PATCH',
+          headers: {
+            'Content-Type': 'application/json',
+            ...getAuthHeaders(),
+          },
+          body: JSON.stringify({ id: nextQ.id, status: nextQ.status }),
+        }).catch(() => {})
+      }
+    })
+    setQuotes(nextQuotes)
+  }
+
   const handleAddProject = (proj: ProjectItem) => {
     setProjects((prev) => [proj, ...prev])
     fetch('/api/projects', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: {
+        'Content-Type': 'application/json',
+        ...getAuthHeaders(),
+      },
       body: JSON.stringify(proj),
     }).catch(() => {})
   }
@@ -200,7 +274,10 @@ export function App() {
     setProjects((prev) => prev.map((p) => (p.id === proj.id ? proj : p)))
     fetch('/api/projects', {
       method: 'PUT',
-      headers: { 'Content-Type': 'application/json' },
+      headers: {
+        'Content-Type': 'application/json',
+        ...getAuthHeaders(),
+      },
       body: JSON.stringify(proj),
     }).catch(() => {})
   }
@@ -209,16 +286,33 @@ export function App() {
     setProjects((prev) => prev.filter((p) => p.id !== id))
     fetch(`/api/projects?id=${encodeURIComponent(id)}`, {
       method: 'DELETE',
+      headers: getAuthHeaders(),
     }).catch(() => {})
   }
 
   const handleUpdateConfig = (next: SiteConfig) => {
     setConfig(next)
-    fetch('/api/config', {
-      method: 'PUT',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(next),
-    }).catch(() => {})
+    persistBundle({ config: next })
+  }
+
+  const handleUpdateHeroSlides = (next: HeroSlide[]) => {
+    setHeroSlides(next)
+    persistBundle({ heroSlides: next })
+  }
+
+  const handleUpdateServices = (next: ServiceItem[]) => {
+    setServices(next)
+    persistBundle({ services: next })
+  }
+
+  const handleUpdateClients = (next: ClientLogoItem[]) => {
+    setClients(next)
+    persistBundle({ clients: next })
+  }
+
+  const handleUpdateClientCreatives = (next: ClientCreativeItem[]) => {
+    setClientCreatives(next)
+    persistBundle({ clientCreatives: next })
   }
 
   const handleResetDefaults = () => {
@@ -377,11 +471,11 @@ export function App() {
         onAddProject={handleAddProject}
         onUpdateProject={handleUpdateProject}
         onDeleteProject={handleDeleteProject}
-        onUpdateHeroSlides={setHeroSlides}
-        onUpdateServices={setServices}
-        onUpdateClients={setClients}
-        onUpdateClientCreatives={setClientCreatives}
-        onUpdateQuotes={setQuotes}
+        onUpdateHeroSlides={handleUpdateHeroSlides}
+        onUpdateServices={handleUpdateServices}
+        onUpdateClients={handleUpdateClients}
+        onUpdateClientCreatives={handleUpdateClientCreatives}
+        onUpdateQuotes={handleUpdateQuotes}
         onUpdateConfig={handleUpdateConfig}
         onResetDefaults={handleResetDefaults}
       />

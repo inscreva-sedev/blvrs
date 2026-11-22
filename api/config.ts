@@ -1,7 +1,9 @@
 import { getDatabase } from './_lib/mongodb'
+import { verifyAdminToken } from './_lib/auth'
 
 interface ApiRequest {
   method?: string
+  headers?: Record<string, string | string[] | undefined>
   body?: Record<string, unknown>
 }
 
@@ -17,19 +19,24 @@ export default async function handler(req: ApiRequest, res: ApiResponse) {
 
     if (req.method === 'GET') {
       const doc = await collection.findOne({ key: 'main' }, { projection: { _id: 0, key: 0 } })
-      res.status(200).json({ config: doc || null })
+      res.status(200).json({ bundle: doc || null })
+      return
+    }
+
+    if (!verifyAdminToken(req)) {
+      res.status(401).json({ error: 'Unauthorized: admin session required' })
       return
     }
 
     if (req.method === 'PUT') {
-      const nextConfig = req.body
-      if (!nextConfig) {
-        res.status(400).json({ error: 'Config payload is required' })
+      const bundle = req.body
+      if (!bundle) {
+        res.status(400).json({ error: 'Content bundle payload is required' })
         return
       }
       await collection.updateOne(
         { key: 'main' },
-        { $set: { ...nextConfig, key: 'main', updatedAt: new Date().toISOString() } },
+        { $set: { ...bundle, key: 'main', updatedAt: new Date().toISOString() } },
         { upsert: true }
       )
       res.status(200).json({ ok: true })

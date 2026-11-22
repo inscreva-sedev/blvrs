@@ -29,6 +29,14 @@ function localCloudinarySignPlugin(): Plugin {
           rawBody += chunk
         })
         req.on('end', () => {
+          const authHeader = req.headers.authorization || ''
+          if (!authHeader.startsWith('Bearer ')) {
+            res.statusCode = 401
+            res.setHeader('Content-Type', 'application/json')
+            res.end(JSON.stringify({ error: 'Sessão administrativa necessária.' }))
+            return
+          }
+
           const cloudName = process.env.CLOUDINARY_CLOUD_NAME
           const apiKey = process.env.CLOUDINARY_API_KEY
           const apiSecret = process.env.CLOUDINARY_API_SECRET

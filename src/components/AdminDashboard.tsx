@@ -424,14 +424,14 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
       >
         <div className="flex h-16 items-center justify-between border-b border-white/10 px-5">
           <div className="flex items-center gap-2.5">
-            <span className="flex h-7 w-7 items-center justify-center rounded-md bg-[#F36B21] text-white font-display text-xs font-extrabold">
-              B
+            <span className="inline-flex items-center rounded-lg bg-white px-2 py-0.5">
+              <img src="/blvrs-logo.png" alt="BLVRS MEDIA" className="h-8 w-auto object-contain" />
             </span>
             <div>
-              <p className="font-display text-xs font-extrabold tracking-[0.2em] uppercase">
-                BLVRS STUDIO
+              <p className="font-display text-[11px] font-extrabold tracking-[0.18em] uppercase text-[#F36B21]">
+                STUDIO
               </p>
-              <p className="text-[10px] text-[#A6A6A6]">Painel Administrativo</p>
+              <p className="text-[10px] text-[#A6A6A6]">Administração</p>
             </div>
           </div>
           <button
@@ -1210,42 +1210,101 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                 </div>
               </section>
 
-              <section className="rounded-xl border border-white/10 bg-[#171717] p-5 flex flex-col sm:flex-row items-center gap-5">
+              <section className="rounded-xl border border-white/10 bg-[#171717] p-5 flex flex-col lg:flex-row items-start lg:items-center gap-5">
                 <img
                   src={config.aboutImage || '/images/hero-branding.jpg'}
                   alt="Sobre Nós"
-                  className="h-28 w-44 rounded-lg object-cover border border-white/10 shrink-0"
+                  className="h-32 w-52 rounded-lg object-cover border border-white/10 shrink-0"
                 />
-                <div className="flex-1 w-full space-y-2">
-                  <div className="flex items-center justify-between">
-                    <h3 className="font-display text-sm font-bold">
-                      Fotografia Institucional - "Sobre Nós"
-                    </h3>
-                    <label className="inline-flex items-center gap-1.5 rounded bg-[#F36B21] px-3 py-1.5 text-[11px] font-semibold text-white cursor-pointer">
-                      <UploadCloud className="h-3.5 w-3.5" />
-                      <span>{uploadingKey === 'about' ? 'A enviar...' : 'Trocar imagem'}</span>
-                      <input
-                        type="file"
-                        accept="image/*"
-                        onChange={(e) => {
-                          const f = e.target.files?.[0]
-                          if (!f) return
-                          handleUpload(f, 'about', 'blvrs-media/about', (url) =>
-                            onUpdateConfig({ ...config, aboutImage: url })
-                          )
-                        }}
-                        className="hidden"
-                      />
-                    </label>
+                <div className="flex-1 w-full space-y-3">
+                  <div className="flex flex-wrap items-center justify-between gap-2">
+                    <div>
+                      <h3 className="font-display text-sm font-bold">
+                        Media Institucional - "Sobre Nós"
+                      </h3>
+                      <p className="text-[11px] text-[#A6A6A6]">
+                        Defina a fotografia de capa e, opcionalmente, um link de vídeo (YouTube,
+                        Vimeo ou MP4).
+                      </p>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <label className="inline-flex items-center gap-1.5 rounded bg-[#F36B21] px-3 py-1.5 text-[11px] font-semibold text-white cursor-pointer">
+                        <UploadCloud className="h-3.5 w-3.5" />
+                        <span>{uploadingKey === 'about' ? 'A enviar...' : 'Trocar imagem'}</span>
+                        <input
+                          type="file"
+                          accept="image/*"
+                          onChange={(e) => {
+                            const f = e.target.files?.[0]
+                            if (!f) return
+                            handleUpload(f, 'about', 'blvrs-media/about', (url) =>
+                              onUpdateConfig({ ...config, aboutImage: url })
+                            )
+                          }}
+                          className="hidden"
+                        />
+                      </label>
+                      <label className="inline-flex items-center gap-1.5 rounded border border-white/15 bg-[#0B0B0B] px-3 py-1.5 text-[11px] font-semibold text-white hover:border-[#F36B21] cursor-pointer">
+                        <UploadCloud className="h-3.5 w-3.5 text-[#F36B21]" />
+                        <span>
+                          {uploadingKey === 'about-video' ? 'A enviar...' : 'Carregar vídeo'}
+                        </span>
+                        <input
+                          type="file"
+                          accept="video/*"
+                          onChange={(e) => {
+                            const f = e.target.files?.[0]
+                            if (!f) return
+                            handleUpload(f, 'about-video', 'blvrs-media/about-video', (url) =>
+                              onUpdateConfig({ ...config, aboutVideoUrl: url })
+                            )
+                          }}
+                          className="hidden"
+                        />
+                      </label>
+                    </div>
                   </div>
-                  <input
-                    type="text"
-                    value={config.aboutImage || '/images/hero-branding.jpg'}
-                    onChange={(e) =>
-                      onUpdateConfig({ ...config, aboutImage: e.target.value })
-                    }
-                    className="w-full rounded border border-white/10 bg-[#0B0B0B] px-3 py-2 text-xs text-white"
-                  />
+
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    <div>
+                      <label className="block text-[11px] text-[#A6A6A6] mb-1">
+                        URL da Imagem / Poster
+                      </label>
+                      <input
+                        type="text"
+                        value={config.aboutImage || '/images/hero-branding.jpg'}
+                        onChange={(e) =>
+                          onUpdateConfig({ ...config, aboutImage: e.target.value })
+                        }
+                        className="w-full rounded border border-white/10 bg-[#0B0B0B] px-3 py-2 text-xs text-white"
+                      />
+                    </div>
+                    <div>
+                      <div className="flex items-center justify-between mb-1">
+                        <label className="text-[11px] text-[#A6A6A6]">
+                          Link do Vídeo (YouTube, Vimeo ou MP4 - opcional)
+                        </label>
+                        {config.aboutVideoUrl && (
+                          <button
+                            type="button"
+                            onClick={() => onUpdateConfig({ ...config, aboutVideoUrl: '' })}
+                            className="text-[10px] text-red-400 hover:underline cursor-pointer"
+                          >
+                            Remover vídeo
+                          </button>
+                        )}
+                      </div>
+                      <input
+                        type="url"
+                        value={config.aboutVideoUrl || ''}
+                        onChange={(e) =>
+                          onUpdateConfig({ ...config, aboutVideoUrl: e.target.value })
+                        }
+                        placeholder="https://www.youtube.com/watch?v=... ou .mp4"
+                        className="w-full rounded border border-white/10 bg-[#0B0B0B] px-3 py-2 text-xs text-white"
+                      />
+                    </div>
+                  </div>
                 </div>
               </section>
             </div>

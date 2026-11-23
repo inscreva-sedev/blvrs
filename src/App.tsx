@@ -67,6 +67,21 @@ function writeStored<T>(key: string, value: T): boolean {
   }
 }
 
+function mergeTeamSocialDefaults(list: TeamMember[]): TeamMember[] {
+  return list.map((member) => {
+    if (
+      member.id === 'team-jermain-advertencio' &&
+      (!member.instagram || member.instagram === 'https://www.instagram.com/blvrs_media/')
+    ) {
+      return { ...member, instagram: 'https://www.instagram.com/len_wolts/' }
+    }
+    if (member.id === 'team-afonso-domingos' && !member.instagram) {
+      return { ...member, instagram: 'https://www.instagram.com/isvib.e/' }
+    }
+    return member
+  })
+}
+
 export function App() {
   const [projects, setProjects] = useState<ProjectItem[]>(() =>
     readStored(STORAGE_KEYS.projects, DEFAULT_PROJECTS)
@@ -84,7 +99,7 @@ export function App() {
     readStored(STORAGE_KEYS.creatives, CLIENT_CREATIVES)
   )
   const [teamMembers, setTeamMembers] = useState<TeamMember[]>(() =>
-    readStored(STORAGE_KEYS.teamMembers, DEFAULT_TEAM_MEMBERS)
+    mergeTeamSocialDefaults(readStored(STORAGE_KEYS.teamMembers, DEFAULT_TEAM_MEMBERS))
   )
   const [config, setConfig] = useState<SiteConfig>(() =>
     readStored(STORAGE_KEYS.config, DEFAULT_SITE_CONFIG)
@@ -208,7 +223,7 @@ export function App() {
               setClientCreatives(bundle.clientCreatives)
             }
             if (Array.isArray(bundle.teamMembers) && bundle.teamMembers.length > 0) {
-              setTeamMembers(bundle.teamMembers)
+              setTeamMembers(mergeTeamSocialDefaults(bundle.teamMembers))
             }
           }
         }

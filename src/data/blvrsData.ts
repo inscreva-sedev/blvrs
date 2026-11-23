@@ -584,7 +584,7 @@ export const DEFAULT_TEAM_MEMBERS: TeamMember[] = [
     bio: 'Visão estratégica, direcção criativa e posicionamento de marca.',
     image: '',
     specialties: ['Direcção Criativa', 'Estratégia'],
-    instagram: 'https://www.instagram.com/blvrs_media/',
+    instagram: 'https://www.instagram.com/len_wolts/',
     isLead: true,
   },
   {
@@ -623,5 +623,6 @@ export const DEFAULT_TEAM_MEMBERS: TeamMember[] = [
     bio: 'Desenvolvimento web, plataformas digitais e integrações.',
     image: '',
     specialties: ['Desenvolvimento Web', 'Sistemas & APIs'],
+    instagram: 'https://www.instagram.com/isvib.e/',
   },
 ]

@@ -1,4 +1,4 @@
-import { getDatabase } from '../_lib/mongodb'
+import { getDatabase } from '../_lib/mongodb.js'
 
 interface CronRequest {
   headers: Record<string, string | string[] | undefined>

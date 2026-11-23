@@ -1,5 +1,5 @@
 import crypto from 'node:crypto'
-import { verifyAdminToken } from '../_lib/auth'
+import { verifyAdminToken } from '../_lib/auth.js'
 
 interface SignRequest {
   method?: string

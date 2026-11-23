@@ -1,5 +1,5 @@
-import { getDatabase } from './_lib/mongodb'
-import { verifyAdminToken } from './_lib/auth'
+import { getDatabase } from './_lib/mongodb.js'
+import { verifyAdminToken } from './_lib/auth.js'
 
 interface ApiRequest {
   method?: string

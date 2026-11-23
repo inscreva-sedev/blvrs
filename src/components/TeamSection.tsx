@@ -88,7 +88,15 @@ export const TeamSection: React.FC<TeamSectionProps> = ({
         )}
 
         {/* Team Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-5">
+        <div
+          className={`grid grid-cols-1 sm:grid-cols-2 gap-6 ${
+            filteredMembers.length === 5
+              ? 'lg:grid-cols-3 xl:grid-cols-5'
+              : filteredMembers.length % 3 === 0
+              ? 'lg:grid-cols-3'
+              : 'lg:grid-cols-4'
+          }`}
+        >
           {filteredMembers.map((member, index) => (
             <Reveal key={member.id} delayMs={index * 70}>
               <article className="group flex h-full flex-col overflow-hidden rounded-2xl border border-black/10 bg-[#F2F2F2] transition-all duration-300 hover:-translate-y-1 hover:border-[#F36B21]/60 hover:shadow-xl">

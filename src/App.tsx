@@ -47,6 +47,7 @@ const STORAGE_KEYS = {
   clients: 'blvrs_clients_v1',
   creatives: 'blvrs_creatives_v1',
   teamMembers: 'blvrs_team_v4',
+  teamRemovedIds: 'blvrs_team_removed_v1',
 }
 
 function readStored<T>(key: string, fallback: T): T {
@@ -67,8 +68,9 @@ function writeStored<T>(key: string, value: T): boolean {
   }
 }
 
-function mergeTeamSocialDefaults(list: TeamMember[]): TeamMember[] {
-  return list.map((member) => {
+function mergeTeamDefaults(list: TeamMember[]): TeamMember[] {
+  const removedIds = new Set(readStored<string[]>(STORAGE_KEYS.teamRemovedIds, []))
+  const updated = list.map((member) => {
     if (
       member.id === 'team-jermain-advertencio' &&
       (!member.instagram || member.instagram === 'https://www.instagram.com/blvrs_media/')
@@ -80,6 +82,14 @@ function mergeTeamSocialDefaults(list: TeamMember[]): TeamMember[] {
     }
     return member
   })
+
+  const existingIds = new Set(updated.map((m) => m.id))
+  const kelvin = DEFAULT_TEAM_MEMBERS.find((m) => m.id === 'team-kelvin-aristides')
+  if (kelvin && !existingIds.has(kelvin.id) && !removedIds.has(kelvin.id)) {
+    updated.push(kelvin)
+  }
+
+  return updated
 }
 
 export function App() {
@@ -99,7 +109,7 @@ export function App() {
     readStored(STORAGE_KEYS.creatives, CLIENT_CREATIVES)
   )
   const [teamMembers, setTeamMembers] = useState<TeamMember[]>(() =>
-    mergeTeamSocialDefaults(readStored(STORAGE_KEYS.teamMembers, DEFAULT_TEAM_MEMBERS))
+    mergeTeamDefaults(readStored(STORAGE_KEYS.teamMembers, DEFAULT_TEAM_MEMBERS))
   )
   const [config, setConfig] = useState<SiteConfig>(() =>
     readStored(STORAGE_KEYS.config, DEFAULT_SITE_CONFIG)
@@ -223,7 +233,7 @@ export function App() {
               setClientCreatives(bundle.clientCreatives)
             }
             if (Array.isArray(bundle.teamMembers) && bundle.teamMembers.length > 0) {
-              setTeamMembers(mergeTeamSocialDefaults(bundle.teamMembers))
+              setTeamMembers(mergeTeamDefaults(bundle.teamMembers))
             }
           }
         }
@@ -388,6 +398,17 @@ export function App() {
   const handleUpdateTeamMembers = (next: React.SetStateAction<TeamMember[]>) => {
     setTeamMembers((prev) => {
       const resolved = typeof next === 'function' ? next(prev) : next
+      const resolvedIds = new Set(resolved.map((m) => m.id))
+      const newlyRemoved = prev
+        .filter((m) => !resolvedIds.has(m.id))
+        .map((m) => m.id)
+      if (newlyRemoved.length > 0) {
+        const existingRemoved = readStored<string[]>(STORAGE_KEYS.teamRemovedIds, [])
+        writeStored(
+          STORAGE_KEYS.teamRemovedIds,
+          Array.from(new Set([...existingRemoved, ...newlyRemoved]))
+        )
+      }
       persistBundle({ teamMembers: resolved })
       return resolved
     })

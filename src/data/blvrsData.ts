@@ -625,4 +625,13 @@ export const DEFAULT_TEAM_MEMBERS: TeamMember[] = [
     specialties: ['Desenvolvimento Web', 'Sistemas & APIs'],
     instagram: 'https://www.instagram.com/isvib.e/',
   },
+  {
+    id: 'team-kelvin-aristides',
+    name: 'Kelvin Aristides',
+    role: 'Designer',
+    department: 'Design & Identidade Visual',
+    bio: 'Criação de identidades visuais, peças gráficas e direcção estética digital.',
+    image: '',
+    specialties: ['Design Gráfico', 'Identidade Visual'],
+  },
 ]

@@ -92,7 +92,7 @@ export const TeamSection: React.FC<TeamSectionProps> = ({
           {filteredMembers.map((member, index) => (
             <Reveal key={member.id} delayMs={index * 70}>
               <article className="group flex h-full flex-col overflow-hidden rounded-2xl border border-black/10 bg-[#F2F2F2] transition-all duration-300 hover:-translate-y-1 hover:border-[#F36B21]/60 hover:shadow-xl">
-                <div className="cinema-card-sheen relative aspect-[4/5] w-full overflow-hidden bg-[#171717]">
+                <div className="cinema-card-sheen relative aspect-square w-full overflow-hidden bg-[#171717]">
                   {member.image ? (
                     <img
                       src={member.image}
@@ -113,12 +113,12 @@ export const TeamSection: React.FC<TeamSectionProps> = ({
                   )}
                   <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/15 to-transparent pointer-events-none" />
 
-                  <div className="absolute top-3 left-3 right-3 flex items-center justify-between gap-2">
-                    <span className="rounded-full bg-black/75 px-3 py-1 text-[10px] font-bold uppercase tracking-wider text-white backdrop-blur-sm">
+                  <div className="absolute top-2.5 left-2.5 right-2.5 flex items-center justify-between gap-1.5">
+                    <span className="truncate rounded-full bg-black/75 px-2.5 py-1 text-[9px] font-bold uppercase tracking-wider text-white backdrop-blur-sm">
                       {member.department}
                     </span>
                     {member.isLead && (
-                      <span className="inline-flex items-center gap-1 rounded-full bg-[#F36B21] px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider text-white shadow">
+                      <span className="inline-flex shrink-0 items-center gap-1 rounded-full bg-[#F36B21] px-2.5 py-1 text-[9px] font-bold uppercase tracking-wider text-white shadow">
                         <Sparkles className="h-2.5 w-2.5" />
                         <span>Direcção</span>
                       </span>

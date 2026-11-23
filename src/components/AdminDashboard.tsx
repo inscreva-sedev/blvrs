@@ -1857,7 +1857,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                     key={member.id}
                     className="flex flex-col overflow-hidden rounded-xl border border-white/10 bg-[#171717]"
                   >
-                    <div className="relative h-52 bg-black">
+                    <div className="relative aspect-square w-full bg-black">
                       {member.image ? (
                         <img
                           src={member.image}

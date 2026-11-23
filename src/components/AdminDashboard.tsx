@@ -4,6 +4,7 @@ import {
   FolderKanban,
   Sparkles,
   Users,
+  UserCheck,
   Inbox,
   Settings,
   LogOut,
@@ -33,6 +34,7 @@ import {
   QuoteSubmission,
   ServiceItem,
   SiteConfig,
+  TeamMember,
 } from '../types'
 import {
   CLOUDINARY_CLOUD_NAME,
@@ -40,7 +42,7 @@ import {
   uploadMediaAsset,
 } from '../lib/cloudinary'
 
-type AdminTab = 'overview' | 'projects' | 'sections' | 'clients' | 'quotes' | 'settings'
+type AdminTab = 'overview' | 'projects' | 'sections' | 'clients' | 'team' | 'quotes' | 'settings'
 
 interface AdminDashboardProps {
   isOpen: boolean
@@ -52,6 +54,7 @@ interface AdminDashboardProps {
   services: ServiceItem[]
   clients: ClientLogoItem[]
   clientCreatives: ClientCreativeItem[]
+  teamMembers: TeamMember[]
   config: SiteConfig
   quotes: QuoteSubmission[]
   onAddProject: (proj: ProjectItem) => void
@@ -61,6 +64,7 @@ interface AdminDashboardProps {
   onUpdateServices: (services: ServiceItem[]) => void
   onUpdateClients: (clients: ClientLogoItem[]) => void
   onUpdateClientCreatives: (creatives: ClientCreativeItem[]) => void
+  onUpdateTeamMembers: (teamMembers: TeamMember[]) => void
   onUpdateQuotes: (quotes: QuoteSubmission[]) => void
   onUpdateConfig: (next: SiteConfig) => void
   onResetDefaults: () => void
@@ -89,6 +93,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
   services,
   clients,
   clientCreatives,
+  teamMembers,
   config,
   quotes,
   onAddProject,
@@ -98,6 +103,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
   onUpdateServices,
   onUpdateClients,
   onUpdateClientCreatives,
+  onUpdateTeamMembers,
   onUpdateQuotes,
   onUpdateConfig,
   onResetDefaults,
@@ -137,6 +143,18 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
   const [newCreativeClient, setNewCreativeClient] = useState('Chicken Village')
   const [newCreativeTitle, setNewCreativeTitle] = useState('')
   const [newCreativeImage, setNewCreativeImage] = useState('')
+
+  // Team member form state
+  const [editingTeamId, setEditingTeamId] = useState<string | null>(null)
+  const [teamName, setTeamName] = useState('')
+  const [teamRole, setTeamRole] = useState('')
+  const [teamDepartment, setTeamDepartment] = useState('Audiovisual')
+  const [teamBio, setTeamBio] = useState('')
+  const [teamImage, setTeamImage] = useState('/images/hero-cinema.jpg')
+  const [teamSpecialtiesRaw, setTeamSpecialtiesRaw] = useState('Direcção, Produção')
+  const [teamInstagram, setTeamInstagram] = useState('')
+  const [teamLinkedin, setTeamLinkedin] = useState('')
+  const [teamIsLead, setTeamIsLead] = useState(false)
 
   const [confirmReset, setConfirmReset] = useState(false)
 
@@ -328,9 +346,67 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
     notify('Estado do orçamento actualizado.')
   }
 
+  const resetTeamForm = () => {
+    setEditingTeamId(null)
+    setTeamName('')
+    setTeamRole('')
+    setTeamDepartment('Audiovisual')
+    setTeamBio('')
+    setTeamImage('/images/hero-cinema.jpg')
+    setTeamSpecialtiesRaw('Direcção, Produção')
+    setTeamInstagram('')
+    setTeamLinkedin('')
+    setTeamIsLead(false)
+  }
+
+  const startEditingTeamMember = (member: TeamMember) => {
+    setEditingTeamId(member.id)
+    setTeamName(member.name)
+    setTeamRole(member.role)
+    setTeamDepartment(member.department)
+    setTeamBio(member.bio)
+    setTeamImage(member.image)
+    setTeamSpecialtiesRaw(member.specialties.join(', '))
+    setTeamInstagram(member.instagram || '')
+    setTeamLinkedin(member.linkedin || '')
+    setTeamIsLead(Boolean(member.isLead))
+  }
+
+  const handleTeamSubmit = (e: React.FormEvent) => {
+    e.preventDefault()
+    if (!teamName.trim() || !teamRole.trim()) return
+
+    const payload: TeamMember = {
+      id: editingTeamId || `team-${Date.now()}`,
+      name: teamName.trim(),
+      role: teamRole.trim(),
+      department: teamDepartment.trim() || 'Equipa Criativa',
+      bio:
+        teamBio.trim() ||
+        'Especialista em produção criativa e execução estratégica na BLVRS MEDIA.',
+      image: optimizeMediaUrl(teamImage.trim(), 1200) || '/images/hero-cinema.jpg',
+      specialties: teamSpecialtiesRaw
+        .split(',')
+        .map((s) => s.trim())
+        .filter(Boolean),
+      instagram: teamInstagram.trim() || undefined,
+      linkedin: teamLinkedin.trim() || undefined,
+      isLead: teamIsLead,
+    }
+
+    if (editingTeamId) {
+      onUpdateTeamMembers(teamMembers.map((m) => (m.id === editingTeamId ? payload : m)))
+      notify('Membro da equipe actualizado.')
+    } else {
+      onUpdateTeamMembers([...teamMembers, payload])
+      notify('Novo membro adicionado à equipe.')
+    }
+    resetTeamForm()
+  }
+
   const handleExportJson = () => {
     const payload = JSON.stringify(
-      { config, projects, heroSlides, services, clients, clientCreatives, quotes },
+      { config, projects, heroSlides, services, clients, clientCreatives, teamMembers, quotes },
       null,
       2
     )
@@ -385,6 +461,12 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
       badge: clients.length,
     },
     {
+      id: 'team',
+      label: 'Equipe',
+      icon: <UserCheck className="h-4 w-4" />,
+      badge: teamMembers.length,
+    },
+    {
       id: 'quotes',
       label: 'Orçamentos (CRM)',
       icon: <Inbox className="h-4 w-4" />,
@@ -409,6 +491,10 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
     clients: {
       title: 'Clientes & Criativos 4:5',
       subtitle: 'Faça a gestão dos logótipos de parceiros e peças criativas.',
+    },
+    team: {
+      title: 'Gestão da Equipe',
+      subtitle: 'Adicione, edite ou actualize fotografias, cargos e biografias da equipe.',
     },
     quotes: {
       title: 'Pedidos de Orçamento (CRM)',
@@ -1560,7 +1646,200 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
             </div>
           )}
 
-          {/* TAB 5: ORÇAMENTOS (CRM) */}
+          {/* TAB 5: EQUIPE */}
+          {tab === 'team' && (
+            <div className="space-y-6">
+              <form
+                onSubmit={handleTeamSubmit}
+                className="rounded-xl border border-white/10 bg-[#171717] p-5 space-y-4"
+              >
+                <div className="flex items-center justify-between">
+                  <h2 className="font-display text-sm font-bold flex items-center gap-2">
+                    <Plus className="h-4 w-4 text-[#F36B21]" />
+                    <span>
+                      {editingTeamId ? 'Editar Membro da Equipe' : 'Adicionar Membro à Equipe'}
+                    </span>
+                  </h2>
+                  {editingTeamId && (
+                    <button
+                      type="button"
+                      onClick={resetTeamForm}
+                      className="text-xs text-[#A6A6A6] hover:text-white cursor-pointer"
+                    >
+                      Cancelar edição
+                    </button>
+                  )}
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                  <input
+                    type="text"
+                    required
+                    value={teamName}
+                    onChange={(e) => setTeamName(e.target.value)}
+                    placeholder="Nome completo *"
+                    className="rounded border border-white/10 bg-[#0B0B0B] px-3 py-2 text-xs text-white"
+                  />
+                  <input
+                    type="text"
+                    required
+                    value={teamRole}
+                    onChange={(e) => setTeamRole(e.target.value)}
+                    placeholder="Cargo / Função *"
+                    className="rounded border border-white/10 bg-[#0B0B0B] px-3 py-2 text-xs text-white"
+                  />
+                  <input
+                    type="text"
+                    value={teamDepartment}
+                    onChange={(e) => setTeamDepartment(e.target.value)}
+                    placeholder="Departamento (ex: Audiovisual)"
+                    className="rounded border border-white/10 bg-[#0B0B0B] px-3 py-2 text-xs text-white"
+                  />
+                </div>
+
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-3">
+                  <textarea
+                    rows={3}
+                    value={teamBio}
+                    onChange={(e) => setTeamBio(e.target.value)}
+                    placeholder="Breve biografia e responsabilidades..."
+                    className="rounded border border-white/10 bg-[#0B0B0B] px-3 py-2 text-xs text-white"
+                  />
+                  <div className="space-y-3">
+                    <div className="flex items-center gap-3">
+                      <img
+                        src={teamImage || '/images/hero-cinema.jpg'}
+                        alt="Pré-visualização"
+                        className="h-12 w-12 rounded-lg object-cover border border-white/10 shrink-0"
+                      />
+                      <input
+                        type="text"
+                        value={teamImage}
+                        onChange={(e) => setTeamImage(e.target.value)}
+                        placeholder="URL da fotografia..."
+                        className="flex-1 rounded border border-white/10 bg-[#0B0B0B] px-3 py-2 text-xs text-white"
+                      />
+                      <label className="inline-flex items-center gap-1.5 rounded bg-[#F36B21] px-3 py-2 text-xs font-semibold text-white cursor-pointer shrink-0">
+                        <UploadCloud className="h-3.5 w-3.5" />
+                        <span>{uploadingKey === 'team-img' ? 'A enviar...' : 'Upload'}</span>
+                        <input
+                          type="file"
+                          accept="image/*"
+                          onChange={(e) => {
+                            const f = e.target.files?.[0]
+                            if (!f) return
+                            handleUpload(f, 'team-img', 'blvrs-media/team', (url) =>
+                              setTeamImage(url)
+                            )
+                          }}
+                          className="hidden"
+                        />
+                      </label>
+                    </div>
+                    <input
+                      type="text"
+                      value={teamSpecialtiesRaw}
+                      onChange={(e) => setTeamSpecialtiesRaw(e.target.value)}
+                      placeholder="Especialidades separadas por vírgula"
+                      className="w-full rounded border border-white/10 bg-[#0B0B0B] px-3 py-2 text-xs text-white"
+                    />
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 items-center">
+                  <input
+                    type="url"
+                    value={teamInstagram}
+                    onChange={(e) => setTeamInstagram(e.target.value)}
+                    placeholder="URL Instagram (opcional)"
+                    className="rounded border border-white/10 bg-[#0B0B0B] px-3 py-2 text-xs text-white"
+                  />
+                  <input
+                    type="url"
+                    value={teamLinkedin}
+                    onChange={(e) => setTeamLinkedin(e.target.value)}
+                    placeholder="URL LinkedIn (opcional)"
+                    className="rounded border border-white/10 bg-[#0B0B0B] px-3 py-2 text-xs text-white"
+                  />
+                  <label className="inline-flex items-center gap-2 text-xs text-[#E5E5E5] cursor-pointer">
+                    <input
+                      type="checkbox"
+                      checked={teamIsLead}
+                      onChange={(e) => setTeamIsLead(e.target.checked)}
+                      className="rounded border-white/20 bg-[#0B0B0B] accent-[#F36B21]"
+                    />
+                    <span>Destacar como Direcção / Liderança</span>
+                  </label>
+                </div>
+
+                <div className="flex justify-end">
+                  <button
+                    type="submit"
+                    className="rounded bg-[#F36B21] px-6 py-2 font-display text-xs font-bold text-white hover:bg-[#dc5b14] cursor-pointer"
+                  >
+                    {editingTeamId ? 'Guardar Alterações' : 'Adicionar à Equipe'}
+                  </button>
+                </div>
+              </form>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4">
+                {teamMembers.map((member) => (
+                  <div
+                    key={member.id}
+                    className="flex flex-col overflow-hidden rounded-xl border border-white/10 bg-[#171717]"
+                  >
+                    <div className="relative h-48 bg-black">
+                      <img
+                        src={member.image}
+                        alt={member.name}
+                        className="h-full w-full object-cover"
+                      />
+                      <span className="absolute top-2.5 left-2.5 rounded-full bg-black/75 px-2.5 py-0.5 text-[10px] font-semibold text-white">
+                        {member.department}
+                      </span>
+                      {member.isLead && (
+                        <span className="absolute top-2.5 right-2.5 rounded-full bg-[#F36B21] px-2.5 py-0.5 text-[10px] font-bold text-white">
+                          Direcção
+                        </span>
+                      )}
+                    </div>
+                    <div className="p-4 flex-1 flex flex-col justify-between space-y-3">
+                      <div>
+                        <h3 className="font-display text-sm font-bold text-white">{member.name}</h3>
+                        <p className="text-[11px] font-semibold text-[#F36B21] mt-0.5">
+                          {member.role}
+                        </p>
+                        <p className="text-xs text-[#A6A6A6] mt-2 line-clamp-3">{member.bio}</p>
+                      </div>
+                      <div className="flex items-center justify-end gap-2 pt-2 border-t border-white/10">
+                        <button
+                          type="button"
+                          onClick={() => startEditingTeamMember(member)}
+                          className="inline-flex items-center gap-1 rounded border border-white/15 px-2.5 py-1 text-[11px] font-semibold text-white hover:border-[#F36B21] hover:text-[#F36B21] cursor-pointer"
+                        >
+                          <Pencil className="h-3 w-3" />
+                          <span>Editar</span>
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => {
+                            onUpdateTeamMembers(teamMembers.filter((m) => m.id !== member.id))
+                            notify('Membro removido da equipe.')
+                          }}
+                          className="inline-flex items-center gap-1 rounded border border-white/15 px-2.5 py-1 text-[11px] font-semibold text-[#A6A6A6] hover:border-red-500/60 hover:text-red-400 cursor-pointer"
+                        >
+                          <Trash2 className="h-3 w-3" />
+                          <span>Remover</span>
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* TAB 6: ORÇAMENTOS (CRM) */}
           {tab === 'quotes' && (
             <div className="space-y-4">
               <div className="flex flex-wrap items-center justify-between gap-3">

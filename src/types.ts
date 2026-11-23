@@ -88,6 +88,19 @@ export interface ClientCreativeItem {
   image: string
 }
 
+export interface TeamMember {
+  id: string
+  name: string
+  role: string
+  department: string
+  bio: string
+  image: string
+  specialties: string[]
+  instagram?: string
+  linkedin?: string
+  isLead?: boolean
+}
+
 export interface SiteConfig {
   brandName: string
   signature: string

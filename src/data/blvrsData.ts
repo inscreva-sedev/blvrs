@@ -6,6 +6,7 @@ import {
   ProjectItem,
   ServiceItem,
   SiteConfig,
+  TeamMember,
 } from '../types'
 
 export const DEFAULT_SITE_CONFIG: SiteConfig = {
@@ -568,4 +569,45 @@ export const CLIENT_CREATIVES: ClientCreativeItem[] = [
     title: `Campanha Clínica - Peça 0${n}`,
     image: `/Criativos%20feitos%20para%20clientes/images%20-IMfisio/Clinica-Fisioterapeuta-4-contents_0${n}.png`,
   })),
+]
+
+export const DEFAULT_TEAM_MEMBERS: TeamMember[] = [
+  {
+    id: 'team-len-wolts',
+    name: 'Jermaine Adverencio (Len Wolts)',
+    role: 'Fundador & Director Criativo',
+    department: 'Direcção Criativa',
+    bio: 'Lidera a visão estratégica, direcção artística e narrativa das campanhas BLVRS MEDIA, unindo estética cinematográfica e posicionamento de marca.',
+    image: '/images/hero-branding.jpg',
+    specialties: ['Direcção Criativa', 'Estratégia de Marca', 'Storytelling'],
+    instagram: 'https://www.instagram.com/blvrs_media/',
+    isLead: true,
+  },
+  {
+    id: 'team-audiovisual',
+    name: 'Equipa de Realização & Câmara',
+    role: 'Direcção de Fotografia & Audiovisual',
+    department: 'Audiovisual',
+    bio: 'Responsável pela captação cinematográfica, iluminação de set, som e realização técnica de comerciais, documentários e videoclipes.',
+    image: '/images/hero-cinema.jpg',
+    specialties: ['Cinematografia', 'Iluminação', 'Captação 4K'],
+  },
+  {
+    id: 'team-fotografia',
+    name: 'Equipa de Fotografia & Arte',
+    role: 'Fotografia Editorial & Publicitária',
+    department: 'Fotografia',
+    bio: 'Produz retratos corporativos, fotografia de produto e campanhas visuais pensadas para comunicar valor e autoridade à primeira vista.',
+    image: '/images/service-photography.jpg',
+    specialties: ['Fotografia Editorial', 'Produto', 'Direcção de Arte'],
+  },
+  {
+    id: 'team-pos-producao',
+    name: 'Equipa de Pós-Produção & Digital',
+    role: 'Edição, Color Grading & Conteúdos',
+    department: 'Pós-Produção & Digital',
+    bio: 'Transforma material bruto em narrativas de alto impacto através de montagem rítmica, correcção de cor, motion design e gestão editorial.',
+    image: '/images/service-postprod.jpg',
+    specialties: ['Color Grading', 'Motion Design', 'Social Media'],
+  },
 ]

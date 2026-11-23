@@ -6,6 +6,7 @@ import { ClientsSection } from './components/ClientsSection'
 import { PortfolioSection } from './components/PortfolioSection'
 import { AboutAndPillars } from './components/AboutAndPillars'
 import { FounderSection } from './components/FounderSection'
+import { TeamSection } from './components/TeamSection'
 import { ContactSection } from './components/ContactSection'
 import { QuoteModal } from './components/QuoteModal'
 import { AdminDashboard } from './components/AdminDashboard'
@@ -20,6 +21,7 @@ import {
   DEFAULT_HERO_SLIDES,
   DEFAULT_PROJECTS,
   DEFAULT_SITE_CONFIG,
+  DEFAULT_TEAM_MEMBERS,
   SERVICES_DATA,
 } from './data/blvrsData'
 import {
@@ -32,6 +34,7 @@ import {
   ServiceCategory,
   ServiceItem,
   SiteConfig,
+  TeamMember,
 } from './types'
 
 const STORAGE_KEYS = {
@@ -42,6 +45,7 @@ const STORAGE_KEYS = {
   services: 'blvrs_services_v1',
   clients: 'blvrs_clients_v1',
   creatives: 'blvrs_creatives_v1',
+  teamMembers: 'blvrs_team_v1',
 }
 
 function readStored<T>(key: string, fallback: T): T {
@@ -68,6 +72,9 @@ export function App() {
   )
   const [clientCreatives, setClientCreatives] = useState<ClientCreativeItem[]>(() =>
     readStored(STORAGE_KEYS.creatives, CLIENT_CREATIVES)
+  )
+  const [teamMembers, setTeamMembers] = useState<TeamMember[]>(() =>
+    readStored(STORAGE_KEYS.teamMembers, DEFAULT_TEAM_MEMBERS)
   )
   const [config, setConfig] = useState<SiteConfig>(() =>
     readStored(STORAGE_KEYS.config, DEFAULT_SITE_CONFIG)
@@ -119,6 +126,10 @@ export function App() {
   }, [clientCreatives])
 
   useEffect(() => {
+    localStorage.setItem(STORAGE_KEYS.teamMembers, JSON.stringify(teamMembers))
+  }, [teamMembers])
+
+  useEffect(() => {
     localStorage.setItem(STORAGE_KEYS.config, JSON.stringify(config))
   }, [config])
 
@@ -160,6 +171,9 @@ export function App() {
             }
             if (Array.isArray(bundle.clientCreatives) && bundle.clientCreatives.length > 0) {
               setClientCreatives(bundle.clientCreatives)
+            }
+            if (Array.isArray(bundle.teamMembers) && bundle.teamMembers.length > 0) {
+              setTeamMembers(bundle.teamMembers)
             }
           }
         }
@@ -214,6 +228,7 @@ export function App() {
     services?: ServiceItem[]
     clients?: ClientLogoItem[]
     clientCreatives?: ClientCreativeItem[]
+    teamMembers?: TeamMember[]
   }) => {
     const bundle = {
       config: overrides.config ?? config,
@@ -221,6 +236,7 @@ export function App() {
       services: overrides.services ?? services,
       clients: overrides.clients ?? clients,
       clientCreatives: overrides.clientCreatives ?? clientCreatives,
+      teamMembers: overrides.teamMembers ?? teamMembers,
     }
     fetch('/api/config', {
       method: 'PUT',
@@ -316,12 +332,18 @@ export function App() {
     persistBundle({ clientCreatives: next })
   }
 
+  const handleUpdateTeamMembers = (next: TeamMember[]) => {
+    setTeamMembers(next)
+    persistBundle({ teamMembers: next })
+  }
+
   const handleResetDefaults = () => {
     setProjects(DEFAULT_PROJECTS)
     setHeroSlides(DEFAULT_HERO_SLIDES)
     setServices(SERVICES_DATA)
     setClients(CLIENT_LOGOS)
     setClientCreatives(CLIENT_CREATIVES)
+    setTeamMembers(DEFAULT_TEAM_MEMBERS)
     setConfig(DEFAULT_SITE_CONFIG)
     Object.values(STORAGE_KEYS).forEach((k) => {
       if (k !== STORAGE_KEYS.quotes) localStorage.removeItem(k)
@@ -376,6 +398,9 @@ export function App() {
         {/* Fundador & Direcção Criativa - Len Wolts */}
         <FounderSection onOpenQuote={() => openQuoteModal()} />
 
+        {/* Equipe BLVRS MEDIA */}
+        <TeamSection teamMembers={teamMembers} onOpenQuote={() => openQuoteModal()} />
+
         {/* 05. Contactos & Formulário de Orçamento */}
         <ContactSection
           config={config}
@@ -404,6 +429,9 @@ export function App() {
               </a>
               <a href="#fundador" className="hover:text-white transition-colors">
                 Fundador
+              </a>
+              <a href="#equipe" className="hover:text-white transition-colors">
+                Equipe
               </a>
               <a href="#contactos" className="hover:text-white transition-colors">
                 Contactos
@@ -468,6 +496,7 @@ export function App() {
         services={services}
         clients={clients}
         clientCreatives={clientCreatives}
+        teamMembers={teamMembers}
         config={config}
         quotes={quotes}
         onAddProject={handleAddProject}
@@ -477,6 +506,7 @@ export function App() {
         onUpdateServices={handleUpdateServices}
         onUpdateClients={handleUpdateClients}
         onUpdateClientCreatives={handleUpdateClientCreatives}
+        onUpdateTeamMembers={handleUpdateTeamMembers}
         onUpdateQuotes={handleUpdateQuotes}
         onUpdateConfig={handleUpdateConfig}
         onResetDefaults={handleResetDefaults}

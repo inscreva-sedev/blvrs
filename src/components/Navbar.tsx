@@ -153,6 +153,22 @@ export const Navbar: React.FC<NavbarProps> = ({
             </a>
 
             <a
+              href="#equipe"
+              onMouseEnter={() => setActiveMenu(null)}
+              onClick={(e) => {
+                e.preventDefault()
+                scrollTo('#equipe')
+              }}
+              className={`px-4 py-1.5 rounded-md text-[13px] font-semibold tracking-wide transition-colors ${
+                isLightBar
+                  ? 'hover:bg-[#F2F2F2]/80 text-[#0B0B0B]'
+                  : 'hover:bg-white/15 text-white'
+              }`}
+            >
+              Equipe
+            </a>
+
+            <a
               href="#contactos"
               onMouseEnter={() => setActiveMenu(null)}
               onClick={(e) => {
@@ -461,6 +477,13 @@ export const Navbar: React.FC<NavbarProps> = ({
                   </button>
                   <button
                     type="button"
+                    onClick={() => scrollTo('#equipe')}
+                    className="block hover:text-[#F36B21] transition-colors cursor-pointer"
+                  >
+                    Nossa Equipe
+                  </button>
+                  <button
+                    type="button"
                     onClick={() => scrollTo('#clientes')}
                     className="block hover:text-[#F36B21] transition-colors cursor-pointer"
                   >
@@ -497,6 +520,7 @@ export const Navbar: React.FC<NavbarProps> = ({
             { label: 'Portefólio', href: '#portfolio' },
             { label: 'Sobre Nós', href: '#sobre' },
             { label: 'Fundador', href: '#fundador' },
+            { label: 'Equipe', href: '#equipe' },
             { label: 'Pilares & Identidade', href: '#pilares' },
             { label: 'Contactos', href: '#contactos' },
           ].map((link) => (

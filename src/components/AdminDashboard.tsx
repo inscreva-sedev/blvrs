@@ -150,7 +150,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
   const [teamRole, setTeamRole] = useState('')
   const [teamDepartment, setTeamDepartment] = useState('Audiovisual')
   const [teamBio, setTeamBio] = useState('')
-  const [teamImage, setTeamImage] = useState('/images/hero-cinema.jpg')
+  const [teamImage, setTeamImage] = useState('')
   const [teamSpecialtiesRaw, setTeamSpecialtiesRaw] = useState('Direcção, Produção')
   const [teamInstagram, setTeamInstagram] = useState('')
   const [teamLinkedin, setTeamLinkedin] = useState('')
@@ -352,7 +352,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
     setTeamRole('')
     setTeamDepartment('Audiovisual')
     setTeamBio('')
-    setTeamImage('/images/hero-cinema.jpg')
+    setTeamImage('')
     setTeamSpecialtiesRaw('Direcção, Produção')
     setTeamInstagram('')
     setTeamLinkedin('')
@@ -384,7 +384,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
       bio:
         teamBio.trim() ||
         'Especialista em produção criativa e execução estratégica na BLVRS MEDIA.',
-      image: optimizeMediaUrl(teamImage.trim(), 1200) || '/images/hero-cinema.jpg',
+      image: teamImage.trim() ? optimizeMediaUrl(teamImage.trim(), 1200) : '',
       specialties: teamSpecialtiesRaw
         .split(',')
         .map((s) => s.trim())
@@ -1707,16 +1707,22 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                   />
                   <div className="space-y-3">
                     <div className="flex items-center gap-3">
-                      <img
-                        src={teamImage || '/images/hero-cinema.jpg'}
-                        alt="Pré-visualização"
-                        className="h-12 w-12 rounded-lg object-cover border border-white/10 shrink-0"
-                      />
+                      {teamImage ? (
+                        <img
+                          src={teamImage}
+                          alt="Pré-visualização"
+                          className="h-12 w-12 rounded-lg object-cover object-top border border-white/10 shrink-0"
+                        />
+                      ) : (
+                        <div className="flex h-12 w-12 items-center justify-center rounded-lg border border-dashed border-white/25 bg-[#0B0B0B] text-[#A6A6A6] shrink-0">
+                          <UploadCloud className="h-4 w-4 text-[#F36B21]" />
+                        </div>
+                      )}
                       <input
                         type="text"
                         value={teamImage}
                         onChange={(e) => setTeamImage(e.target.value)}
-                        placeholder="URL da fotografia..."
+                        placeholder="URL da fotografia (ou clique em Upload)..."
                         className="flex-1 rounded border border-white/10 bg-[#0B0B0B] px-3 py-2 text-xs text-white"
                       />
                       <label className="inline-flex items-center gap-1.5 rounded bg-[#F36B21] px-3 py-2 text-xs font-semibold text-white cursor-pointer shrink-0">
@@ -1788,12 +1794,27 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                     key={member.id}
                     className="flex flex-col overflow-hidden rounded-xl border border-white/10 bg-[#171717]"
                   >
-                    <div className="relative h-48 bg-black">
-                      <img
-                        src={member.image}
-                        alt={member.name}
-                        className="h-full w-full object-cover"
-                      />
+                    <div className="relative h-52 bg-black">
+                      {member.image ? (
+                        <img
+                          src={member.image}
+                          alt={member.name}
+                          className="h-full w-full object-cover object-top"
+                        />
+                      ) : (
+                        <div className="flex h-full w-full flex-col items-center justify-center border-b border-dashed border-white/15 bg-gradient-to-br from-[#171717] to-[#0B0B0B] px-4 text-center">
+                          <div className="rounded-xl bg-white/95 px-4 py-2.5 shadow mb-2">
+                            <img
+                              src="/blvrs-logo.png"
+                              alt="BLVRS MEDIA"
+                              className="h-8 w-auto object-contain"
+                            />
+                          </div>
+                          <p className="text-[10px] text-[#A6A6A6]">
+                            Logo provisório • Clique abaixo para adicionar foto
+                          </p>
+                        </div>
+                      )}
                       <span className="absolute top-2.5 left-2.5 rounded-full bg-black/75 px-2.5 py-0.5 text-[10px] font-semibold text-white">
                         {member.department}
                       </span>
@@ -1811,26 +1832,59 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                         </p>
                         <p className="text-xs text-[#A6A6A6] mt-2 line-clamp-3">{member.bio}</p>
                       </div>
-                      <div className="flex items-center justify-end gap-2 pt-2 border-t border-white/10">
-                        <button
-                          type="button"
-                          onClick={() => startEditingTeamMember(member)}
-                          className="inline-flex items-center gap-1 rounded border border-white/15 px-2.5 py-1 text-[11px] font-semibold text-white hover:border-[#F36B21] hover:text-[#F36B21] cursor-pointer"
-                        >
-                          <Pencil className="h-3 w-3" />
-                          <span>Editar</span>
-                        </button>
-                        <button
-                          type="button"
-                          onClick={() => {
-                            onUpdateTeamMembers(teamMembers.filter((m) => m.id !== member.id))
-                            notify('Membro removido da equipe.')
-                          }}
-                          className="inline-flex items-center gap-1 rounded border border-white/15 px-2.5 py-1 text-[11px] font-semibold text-[#A6A6A6] hover:border-red-500/60 hover:text-red-400 cursor-pointer"
-                        >
-                          <Trash2 className="h-3 w-3" />
-                          <span>Remover</span>
-                        </button>
+                      <div className="space-y-2 pt-2 border-t border-white/10">
+                        <label className="flex w-full items-center justify-center gap-1.5 rounded bg-[#F36B21] py-1.5 text-[11px] font-semibold text-white hover:bg-[#dc5b14] cursor-pointer transition-colors">
+                          <UploadCloud className="h-3.5 w-3.5" />
+                          <span>
+                            {uploadingKey === `team-card-${member.id}`
+                              ? 'A enviar foto...'
+                              : member.image
+                              ? 'Trocar Fotografia'
+                              : 'Adicionar Fotografia'}
+                          </span>
+                          <input
+                            type="file"
+                            accept="image/*"
+                            onChange={(e) => {
+                              const f = e.target.files?.[0]
+                              if (!f) return
+                              handleUpload(
+                                f,
+                                `team-card-${member.id}`,
+                                'blvrs-media/team',
+                                (url) => {
+                                  onUpdateTeamMembers(
+                                    teamMembers.map((m) =>
+                                      m.id === member.id ? { ...m, image: url } : m
+                                    )
+                                  )
+                                }
+                              )
+                            }}
+                            className="hidden"
+                          />
+                        </label>
+                        <div className="flex items-center justify-end gap-2">
+                          <button
+                            type="button"
+                            onClick={() => startEditingTeamMember(member)}
+                            className="inline-flex items-center gap-1 rounded border border-white/15 px-2.5 py-1 text-[11px] font-semibold text-white hover:border-[#F36B21] hover:text-[#F36B21] cursor-pointer"
+                          >
+                            <Pencil className="h-3 w-3" />
+                            <span>Editar</span>
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => {
+                              onUpdateTeamMembers(teamMembers.filter((m) => m.id !== member.id))
+                              notify('Membro removido da equipe.')
+                            }}
+                            className="inline-flex items-center gap-1 rounded border border-white/15 px-2.5 py-1 text-[11px] font-semibold text-[#A6A6A6] hover:border-red-500/60 hover:text-red-400 cursor-pointer"
+                          >
+                            <Trash2 className="h-3 w-3" />
+                            <span>Remover</span>
+                          </button>
+                        </div>
                       </div>
                     </div>
                   </div>

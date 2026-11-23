@@ -88,13 +88,25 @@ export const TeamSection: React.FC<TeamSectionProps> = ({ teamMembers, onOpenQuo
             <Reveal key={member.id} delayMs={index * 70}>
               <article className="group flex h-full flex-col overflow-hidden rounded-2xl border border-black/10 bg-[#F2F2F2] transition-all duration-300 hover:-translate-y-1 hover:border-[#F36B21]/60 hover:shadow-xl">
                 <div className="cinema-card-sheen relative aspect-[4/5] w-full overflow-hidden bg-[#171717]">
-                  <img
-                    src={member.image || '/images/hero-cinema.jpg'}
-                    alt={member.name}
-                    loading="lazy"
-                    className="h-full w-full object-cover transition-transform duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-105"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/15 to-transparent" />
+                  {member.image ? (
+                    <img
+                      src={member.image}
+                      alt={member.name}
+                      loading="lazy"
+                      className="h-full w-full object-cover object-top transition-transform duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-105"
+                    />
+                  ) : (
+                    <div className="flex h-full w-full flex-col items-center justify-center bg-gradient-to-br from-[#1B1B1B] via-[#121212] to-[#0B0B0B] px-6 text-center">
+                      <div className="rounded-2xl bg-white/95 px-6 py-4 shadow-xl transition-transform duration-500 group-hover:scale-105">
+                        <img
+                          src="/blvrs-logo.png"
+                          alt="BLVRS MEDIA"
+                          className="h-14 w-auto object-contain"
+                        />
+                      </div>
+                    </div>
+                  )}
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/15 to-transparent pointer-events-none" />
 
                   <div className="absolute top-3 left-3 right-3 flex items-center justify-between gap-2">
                     <span className="rounded-full bg-black/75 px-3 py-1 text-[10px] font-bold uppercase tracking-wider text-white backdrop-blur-sm">

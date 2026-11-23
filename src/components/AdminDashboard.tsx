@@ -24,6 +24,8 @@ import {
   X,
   Database,
   Cloud,
+  ArrowLeft,
+  ArrowRight,
 } from 'lucide-react'
 import {
   ClientCreativeItem,
@@ -64,7 +66,7 @@ interface AdminDashboardProps {
   onUpdateServices: (services: ServiceItem[]) => void
   onUpdateClients: (clients: ClientLogoItem[]) => void
   onUpdateClientCreatives: (creatives: ClientCreativeItem[]) => void
-  onUpdateTeamMembers: (teamMembers: TeamMember[]) => void
+  onUpdateTeamMembers: (teamMembers: React.SetStateAction<TeamMember[]>) => void
   onUpdateQuotes: (quotes: QuoteSubmission[]) => void
   onUpdateConfig: (next: SiteConfig) => void
   onResetDefaults: () => void
@@ -402,6 +404,16 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
       notify('Novo membro adicionado à equipe.')
     }
     resetTeamForm()
+  }
+
+  const moveTeamMember = (index: number, direction: -1 | 1) => {
+    const targetIndex = index + direction
+    if (targetIndex < 0 || targetIndex >= teamMembers.length) return
+    const next = [...teamMembers]
+    const [moved] = next.splice(index, 1)
+    next.splice(targetIndex, 0, moved)
+    onUpdateTeamMembers(next)
+    notify('Ordem da equipe actualizada.')
   }
 
   const handleExportJson = () => {
@@ -1649,6 +1661,56 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
           {/* TAB 5: EQUIPE */}
           {tab === 'team' && (
             <div className="space-y-6">
+              {/* Section Header Settings */}
+              <div className="rounded-xl border border-white/10 bg-[#171717] p-5 space-y-3">
+                <h2 className="font-display text-sm font-bold uppercase tracking-wider text-[#F36B21]">
+                  Cabeçalho da Secção Equipe
+                </h2>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+                  <div>
+                    <label className="block text-[11px] text-[#A6A6A6] mb-1">
+                      Etiqueta (Badge)
+                    </label>
+                    <input
+                      type="text"
+                      value={config.teamBadge ?? 'Nossa Equipe'}
+                      onChange={(e) => onUpdateConfig({ ...config, teamBadge: e.target.value })}
+                      className="w-full rounded border border-white/10 bg-[#0B0B0B] px-3 py-2 text-xs text-white"
+                    />
+                  </div>
+                  <div className="md:col-span-2">
+                    <label className="block text-[11px] text-[#A6A6A6] mb-1">
+                      Título Principal da Secção
+                    </label>
+                    <input
+                      type="text"
+                      value={
+                        config.teamTitle ??
+                        'Talento criativo, visão estratégica e rigor técnico.'
+                      }
+                      onChange={(e) => onUpdateConfig({ ...config, teamTitle: e.target.value })}
+                      className="w-full rounded border border-white/10 bg-[#0B0B0B] px-3 py-2 text-xs text-white"
+                    />
+                  </div>
+                </div>
+                <div>
+                  <label className="block text-[11px] text-[#A6A6A6] mb-1">
+                    Descrição Introdutória
+                  </label>
+                  <textarea
+                    rows={2}
+                    value={
+                      config.teamDescription ??
+                      'Cada projecto da BLVRS MEDIA ganha vida através de uma estrutura multidisciplinar que une direcção criativa, produção audiovisual, fotografia e estratégia digital.'
+                    }
+                    onChange={(e) =>
+                      onUpdateConfig({ ...config, teamDescription: e.target.value })
+                    }
+                    className="w-full rounded border border-white/10 bg-[#0B0B0B] px-3 py-2 text-xs text-white"
+                  />
+                </div>
+              </div>
+
               <form
                 onSubmit={handleTeamSubmit}
                 className="rounded-xl border border-white/10 bg-[#171717] p-5 space-y-4"
@@ -1733,6 +1795,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                           accept="image/*"
                           onChange={(e) => {
                             const f = e.target.files?.[0]
+                            e.target.value = ''
                             if (!f) return
                             handleUpload(f, 'team-img', 'blvrs-media/team', (url) =>
                               setTeamImage(url)
@@ -1789,7 +1852,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
               </form>
 
               <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4">
-                {teamMembers.map((member) => (
+                {teamMembers.map((member, index) => (
                   <div
                     key={member.id}
                     className="flex flex-col overflow-hidden rounded-xl border border-white/10 bg-[#171717]"
@@ -1847,14 +1910,15 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                             accept="image/*"
                             onChange={(e) => {
                               const f = e.target.files?.[0]
+                              e.target.value = ''
                               if (!f) return
                               handleUpload(
                                 f,
                                 `team-card-${member.id}`,
                                 'blvrs-media/team',
                                 (url) => {
-                                  onUpdateTeamMembers(
-                                    teamMembers.map((m) =>
+                                  onUpdateTeamMembers((prev) =>
+                                    prev.map((m) =>
                                       m.id === member.id ? { ...m, image: url } : m
                                     )
                                   )
@@ -1864,26 +1928,48 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                             className="hidden"
                           />
                         </label>
-                        <div className="flex items-center justify-end gap-2">
-                          <button
-                            type="button"
-                            onClick={() => startEditingTeamMember(member)}
-                            className="inline-flex items-center gap-1 rounded border border-white/15 px-2.5 py-1 text-[11px] font-semibold text-white hover:border-[#F36B21] hover:text-[#F36B21] cursor-pointer"
-                          >
-                            <Pencil className="h-3 w-3" />
-                            <span>Editar</span>
-                          </button>
-                          <button
-                            type="button"
-                            onClick={() => {
-                              onUpdateTeamMembers(teamMembers.filter((m) => m.id !== member.id))
-                              notify('Membro removido da equipe.')
-                            }}
-                            className="inline-flex items-center gap-1 rounded border border-white/15 px-2.5 py-1 text-[11px] font-semibold text-[#A6A6A6] hover:border-red-500/60 hover:text-red-400 cursor-pointer"
-                          >
-                            <Trash2 className="h-3 w-3" />
-                            <span>Remover</span>
-                          </button>
+                        <div className="flex items-center justify-between gap-2">
+                          <div className="flex items-center gap-1">
+                            <button
+                              type="button"
+                              disabled={index === 0}
+                              onClick={() => moveTeamMember(index, -1)}
+                              title="Mover para trás"
+                              className="inline-flex h-7 w-7 items-center justify-center rounded border border-white/15 text-[#A6A6A6] hover:border-[#F36B21] hover:text-white disabled:opacity-30 disabled:pointer-events-none cursor-pointer"
+                            >
+                              <ArrowLeft className="h-3.5 w-3.5" />
+                            </button>
+                            <button
+                              type="button"
+                              disabled={index === teamMembers.length - 1}
+                              onClick={() => moveTeamMember(index, 1)}
+                              title="Mover para frente"
+                              className="inline-flex h-7 w-7 items-center justify-center rounded border border-white/15 text-[#A6A6A6] hover:border-[#F36B21] hover:text-white disabled:opacity-30 disabled:pointer-events-none cursor-pointer"
+                            >
+                              <ArrowRight className="h-3.5 w-3.5" />
+                            </button>
+                          </div>
+                          <div className="flex items-center gap-2">
+                            <button
+                              type="button"
+                              onClick={() => startEditingTeamMember(member)}
+                              className="inline-flex items-center gap-1 rounded border border-white/15 px-2.5 py-1 text-[11px] font-semibold text-white hover:border-[#F36B21] hover:text-[#F36B21] cursor-pointer"
+                            >
+                              <Pencil className="h-3 w-3" />
+                              <span>Editar</span>
+                            </button>
+                            <button
+                              type="button"
+                              onClick={() => {
+                                onUpdateTeamMembers(teamMembers.filter((m) => m.id !== member.id))
+                                notify('Membro removido da equipe.')
+                              }}
+                              className="inline-flex items-center gap-1 rounded border border-white/15 px-2.5 py-1 text-[11px] font-semibold text-[#A6A6A6] hover:border-red-500/60 hover:text-red-400 cursor-pointer"
+                            >
+                              <Trash2 className="h-3 w-3" />
+                              <span>Remover</span>
+                            </button>
+                          </div>
                         </div>
                       </div>
                     </div>

@@ -108,6 +108,9 @@ export interface SiteConfig {
   shortDescription: string
   aboutImage?: string
   aboutVideoUrl?: string
+  teamBadge?: string
+  teamTitle?: string
+  teamDescription?: string
   phone: string
   whatsappNumber: string
   whatsappDisplay: string

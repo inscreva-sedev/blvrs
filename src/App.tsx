@@ -15,6 +15,7 @@ import { FloatingBar } from './components/FloatingBar'
 import { ScrollProgress } from './components/ScrollProgress'
 import { ScrollControl } from './components/ScrollControl'
 import { AdminSession, getAdminSession, getAuthHeaders, logoutAdmin } from './lib/auth'
+import { shrinkDataUrlIfOversized } from './lib/cloudinary'
 import {
   CLIENT_CREATIVES,
   CLIENT_LOGOS,
@@ -54,6 +55,15 @@ function readStored<T>(key: string, fallback: T): T {
     return saved ? JSON.parse(saved) : fallback
   } catch {
     return fallback
+  }
+}
+
+function writeStored<T>(key: string, value: T): boolean {
+  try {
+    localStorage.setItem(key, JSON.stringify(value))
+    return true
+  } catch {
+    return false
   }
 }
 
@@ -106,36 +116,61 @@ export function App() {
   }
 
   useEffect(() => {
-    localStorage.setItem(STORAGE_KEYS.projects, JSON.stringify(projects))
+    writeStored(STORAGE_KEYS.projects, projects)
   }, [projects])
 
   useEffect(() => {
-    localStorage.setItem(STORAGE_KEYS.heroSlides, JSON.stringify(heroSlides))
+    writeStored(STORAGE_KEYS.heroSlides, heroSlides)
   }, [heroSlides])
 
   useEffect(() => {
-    localStorage.setItem(STORAGE_KEYS.services, JSON.stringify(services))
+    writeStored(STORAGE_KEYS.services, services)
   }, [services])
 
   useEffect(() => {
-    localStorage.setItem(STORAGE_KEYS.clients, JSON.stringify(clients))
+    writeStored(STORAGE_KEYS.clients, clients)
   }, [clients])
 
   useEffect(() => {
-    localStorage.setItem(STORAGE_KEYS.creatives, JSON.stringify(clientCreatives))
+    writeStored(STORAGE_KEYS.creatives, clientCreatives)
   }, [clientCreatives])
 
   useEffect(() => {
-    localStorage.setItem(STORAGE_KEYS.teamMembers, JSON.stringify(teamMembers))
+    writeStored(STORAGE_KEYS.teamMembers, teamMembers)
   }, [teamMembers])
 
   useEffect(() => {
-    localStorage.setItem(STORAGE_KEYS.config, JSON.stringify(config))
+    writeStored(STORAGE_KEYS.config, config)
   }, [config])
 
   useEffect(() => {
-    localStorage.setItem(STORAGE_KEYS.quotes, JSON.stringify(quotes))
+    writeStored(STORAGE_KEYS.quotes, quotes)
   }, [quotes])
+
+  // Compact any previously stored oversized local data-URL team photos so quota stays healthy
+  useEffect(() => {
+    let active = true
+    async function compactOversizedTeamImages() {
+      const hasOversized = teamMembers.some(
+        (m) => m.image.startsWith('data:image/') && m.image.length > 300_000
+      )
+      if (!hasOversized) return
+      const next = await Promise.all(
+        teamMembers.map(async (m) => ({
+          ...m,
+          image: await shrinkDataUrlIfOversized(m.image),
+        }))
+      )
+      if (active) {
+        setTeamMembers(next)
+      }
+    }
+    compactOversizedTeamImages()
+    return () => {
+      active = false
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   // Sync public content & projects with MongoDB API endpoints when deployed
   useEffect(() => {
@@ -332,9 +367,12 @@ export function App() {
     persistBundle({ clientCreatives: next })
   }
 
-  const handleUpdateTeamMembers = (next: TeamMember[]) => {
-    setTeamMembers(next)
-    persistBundle({ teamMembers: next })
+  const handleUpdateTeamMembers = (next: React.SetStateAction<TeamMember[]>) => {
+    setTeamMembers((prev) => {
+      const resolved = typeof next === 'function' ? next(prev) : next
+      persistBundle({ teamMembers: resolved })
+      return resolved
+    })
   }
 
   const handleResetDefaults = () => {
@@ -399,7 +437,11 @@ export function App() {
         <FounderSection onOpenQuote={() => openQuoteModal()} />
 
         {/* Equipe BLVRS MEDIA */}
-        <TeamSection teamMembers={teamMembers} onOpenQuote={() => openQuoteModal()} />
+        <TeamSection
+          config={config}
+          teamMembers={teamMembers}
+          onOpenQuote={() => openQuoteModal()}
+        />
 
         {/* 05. Contactos & Formulário de Orçamento */}
         <ContactSection

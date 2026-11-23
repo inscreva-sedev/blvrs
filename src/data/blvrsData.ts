@@ -17,6 +17,10 @@ export const DEFAULT_SITE_CONFIG: SiteConfig = {
     'A BLVRS MEDIA é uma agência criativa e de comunicação especializada em produção audiovisual, fotografia, branding, direcção criativa e desenvolvimento de estratégias de comunicação para marcas, empresas, artistas e projectos.',
   aboutImage: '/images/hero-branding.jpg',
   aboutVideoUrl: 'https://www.instagram.com/p/De9BI9vTLAp/',
+  teamBadge: 'Nossa Equipe',
+  teamTitle: 'Talento criativo, visão estratégica e rigor técnico.',
+  teamDescription:
+    'Cada projecto da BLVRS MEDIA ganha vida através de uma estrutura multidisciplinar que une direcção criativa, produção audiovisual, fotografia e estratégia digital.',
   phone: '+258 87 408 7213',
   whatsappNumber: '258844756340',
   whatsappDisplay: '+258 84 475 6340',

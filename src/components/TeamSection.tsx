@@ -1,14 +1,19 @@
 import React, { useMemo, useState } from 'react'
 import { ArrowRight, Instagram, Linkedin, Sparkles, Users } from 'lucide-react'
-import { TeamMember } from '../types'
+import { SiteConfig, TeamMember } from '../types'
 import { Reveal } from './Reveal'
 
 interface TeamSectionProps {
+  config: SiteConfig
   teamMembers: TeamMember[]
   onOpenQuote: () => void
 }
 
-export const TeamSection: React.FC<TeamSectionProps> = ({ teamMembers, onOpenQuote }) => {
+export const TeamSection: React.FC<TeamSectionProps> = ({
+  config,
+  teamMembers,
+  onOpenQuote,
+}) => {
   const [selectedDepartment, setSelectedDepartment] = useState<string>('Todos')
 
   const departments = useMemo(() => {
@@ -35,14 +40,14 @@ export const TeamSection: React.FC<TeamSectionProps> = ({ teamMembers, onOpenQuo
             <div className="space-y-3 max-w-3xl">
               <span className="inline-flex items-center gap-1.5 text-[11px] font-bold uppercase tracking-[0.22em] text-[#F36B21]">
                 <Users className="h-3.5 w-3.5" />
-                Nossa Equipe
+                {config.teamBadge || 'Nossa Equipe'}
               </span>
               <h2 className="font-display text-3xl sm:text-5xl font-extrabold tracking-tight text-[#0B0B0B]">
-                Talento criativo, visão estratégica e rigor técnico.
+                {config.teamTitle || 'Talento criativo, visão estratégica e rigor técnico.'}
               </h2>
               <p className="text-sm sm:text-base text-[#444] leading-relaxed">
-                Cada projecto da BLVRS MEDIA ganha vida através de uma estrutura multidisciplinar
-                que une direcção criativa, produção audiovisual, fotografia e estratégia digital.
+                {config.teamDescription ||
+                  'Cada projecto da BLVRS MEDIA ganha vida através de uma estrutura multidisciplinar que une direcção criativa, produção audiovisual, fotografia e estratégia digital.'}
               </p>
             </div>
 

@@ -26,6 +26,62 @@ export interface CloudinaryUploadResult {
   storageMode: 'cloudinary' | 'local-optimized'
 }
 
+async function compressImageSource(src: string, maxBytes = 240_000): Promise<string> {
+  return new Promise((resolve, reject) => {
+    const img = new Image()
+    img.onload = () => {
+      const encodeAtSize = (maxDim: number, quality: number): string => {
+        let { width, height } = img
+        if (width > maxDim || height > maxDim) {
+          const scale = Math.min(maxDim / width, maxDim / height)
+          width = Math.max(1, Math.round(width * scale))
+          height = Math.max(1, Math.round(height * scale))
+        }
+        const canvas = document.createElement('canvas')
+        canvas.width = width
+        canvas.height = height
+        const ctx = canvas.getContext('2d')
+        if (!ctx) {
+          throw new Error('Não foi possível processar a imagem.')
+        }
+        ctx.fillStyle = '#FFFFFF'
+        ctx.fillRect(0, 0, width, height)
+        ctx.drawImage(img, 0, 0, width, height)
+        return canvas.toDataURL('image/jpeg', quality)
+      }
+
+      try {
+        let dataUrl = encodeAtSize(900, 0.78)
+        if (dataUrl.length > maxBytes) {
+          dataUrl = encodeAtSize(720, 0.68)
+        }
+        if (dataUrl.length > maxBytes) {
+          dataUrl = encodeAtSize(560, 0.58)
+        }
+        resolve(dataUrl)
+      } catch (err) {
+        reject(err instanceof Error ? err : new Error('Não foi possível processar a imagem.'))
+      }
+    }
+    img.onerror = () => reject(new Error('Formato de imagem inválido.'))
+    img.src = src
+  })
+}
+
+export async function shrinkDataUrlIfOversized(
+  url: string,
+  maxLength = 300_000
+): Promise<string> {
+  if (!url.startsWith('data:image/') || url.length <= maxLength) {
+    return url
+  }
+  try {
+    return await compressImageSource(url, maxLength)
+  } catch {
+    return url
+  }
+}
+
 /**
  * Compresses an image file in-browser as a fallback when offline or without server signing.
  */
@@ -39,36 +95,12 @@ async function fileToCompressedDataUrl(file: File): Promise<string> {
     })
   }
 
-  return new Promise((resolve, reject) => {
-    const img = new Image()
-    const objectUrl = URL.createObjectURL(file)
-    img.onload = () => {
-      URL.revokeObjectURL(objectUrl)
-      const maxDim = 1600
-      let { width, height } = img
-      if (width > maxDim || height > maxDim) {
-        const scale = Math.min(maxDim / width, maxDim / height)
-        width = Math.round(width * scale)
-        height = Math.round(height * scale)
-      }
-      const canvas = document.createElement('canvas')
-      canvas.width = width
-      canvas.height = height
-      const ctx = canvas.getContext('2d')
-      if (!ctx) {
-        reject(new Error('Não foi possível processar a imagem.'))
-        return
-      }
-      ctx.drawImage(img, 0, 0, width, height)
-      const outputMime = file.type === 'image/png' ? 'image/png' : 'image/jpeg'
-      resolve(canvas.toDataURL(outputMime, 0.85))
-    }
-    img.onerror = () => {
-      URL.revokeObjectURL(objectUrl)
-      reject(new Error('Formato de imagem inválido.'))
-    }
-    img.src = objectUrl
-  })
+  const objectUrl = URL.createObjectURL(file)
+  try {
+    return await compressImageSource(objectUrl)
+  } finally {
+    URL.revokeObjectURL(objectUrl)
+  }
 }
 
 /**

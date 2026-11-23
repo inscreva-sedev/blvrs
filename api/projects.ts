@@ -21,7 +21,7 @@ export default async function handler(req: ApiRequest, res: ApiResponse) {
     if (req.method === 'GET') {
       const items = await collection
         .find({}, { projection: { _id: 0 } })
-        .sort({ createdAt: -1 })
+        .sort({ sortOrder: 1, createdAt: -1 })
         .toArray()
       res.status(200).json({ projects: items })
       return
@@ -44,6 +44,23 @@ export default async function handler(req: ApiRequest, res: ApiResponse) {
     }
 
     if (req.method === 'PUT') {
+      if (Array.isArray(req.body?.projects)) {
+        const list = req.body.projects as Array<Record<string, unknown>>
+        await collection.deleteMany({})
+        if (list.length > 0) {
+          const now = new Date().toISOString()
+          await collection.insertMany(
+            list.map((item, idx) => ({
+              ...item,
+              sortOrder: idx,
+              updatedAt: now,
+            }))
+          )
+        }
+        res.status(200).json({ ok: true, count: list.length })
+        return
+      }
+
       const project = req.body
       if (!project || !project.id || !project.title) {
         res.status(400).json({ error: 'Invalid project payload' })

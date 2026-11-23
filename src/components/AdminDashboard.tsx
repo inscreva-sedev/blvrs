@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react'
+import React, { useMemo, useRef, useState } from 'react'
 import {
   LayoutDashboard,
   FolderKanban,
@@ -115,6 +115,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
   const [toast, setToast] = useState<string | null>(null)
   const [errorMsg, setErrorMsg] = useState<string | null>(null)
   const [uploadingKey, setUploadingKey] = useState<string | null>(null)
+  const workspaceScrollRef = useRef<HTMLDivElement>(null)
 
   // Portfolio search/filter & editor
   const [projectSearch, setProjectSearch] = useState('')
@@ -204,10 +205,17 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
     setShowProjectForm(false)
   }
 
+  const scrollWorkspaceTop = () => {
+    requestAnimationFrame(() => {
+      workspaceScrollRef.current?.scrollTo({ top: 0, behavior: 'smooth' })
+    })
+  }
+
   const openNewProjectForm = () => {
     resetProjectForm()
     setShowProjectForm(true)
     setTab('projects')
+    scrollWorkspaceTop()
   }
 
   const startEditingProject = (proj: ProjectItem) => {
@@ -227,6 +235,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
     setFeatured(proj.featured)
     setShowProjectForm(true)
     setTab('projects')
+    scrollWorkspaceTop()
   }
 
   const handleUpload = async (
@@ -372,6 +381,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
     setTeamInstagram(member.instagram || '')
     setTeamLinkedin(member.linkedin || '')
     setTeamIsLead(Boolean(member.isLead))
+    scrollWorkspaceTop()
   }
 
   const handleTeamSubmit = (e: React.FormEvent) => {
@@ -647,7 +657,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
         </header>
 
         {/* Main Scrollable Workspace */}
-        <div className="flex-1 overflow-y-auto p-4 sm:p-8 space-y-6">
+        <div ref={workspaceScrollRef} className="flex-1 overflow-y-auto p-4 sm:p-8 space-y-6">
           {toast && (
             <div className="flex items-center justify-between rounded-xl border border-emerald-500/30 bg-emerald-500/10 px-4 py-3 text-xs text-emerald-300">
               <span className="flex items-center gap-2 font-medium">
@@ -960,6 +970,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                             accept="image/*,video/*"
                             onChange={(e) => {
                               const f = e.target.files?.[0]
+                              e.target.value = ''
                               if (!f) return
                               handleUpload(f, 'proj-cover', 'blvrs-media/portfolio', (url, t) => {
                                 if (t === 'video') {
@@ -1021,12 +1032,15 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                           <input
                             type="file"
                             accept="image/*"
-                            onChange={(e) => {
-                              const f = e.target.files?.[0]
-                              if (!f) return
-                              handleUpload(f, 'proj-gallery', 'blvrs-media/gallery', (url) =>
-                                setGallery((prev) => [...prev, url])
-                              )
+                            multiple
+                            onChange={async (e) => {
+                              const files = Array.from(e.target.files || [])
+                              e.target.value = ''
+                              for (const f of files) {
+                                await handleUpload(f, 'proj-gallery', 'blvrs-media/gallery', (url) =>
+                                  setGallery((prev) => [...prev, url])
+                                )
+                              }
                             }}
                             className="hidden"
                           />
@@ -1163,11 +1177,39 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                         </h3>
                         <p className="mt-1 text-xs text-[#A6A6A6] line-clamp-2">{proj.summary}</p>
                       </div>
-                      <div className="flex items-center justify-between border-t border-white/10 pt-3">
-                        <span className="text-[11px] text-[#777]">
+                      <div className="flex items-center justify-between border-t border-white/10 pt-3 gap-2">
+                        <span className="text-[11px] text-[#777] truncate">
                           {proj.gallery ? `${proj.gallery.length} fotos na galeria` : 'Capa única'}
                         </span>
-                        <div className="flex items-center gap-1.5">
+                        <div className="flex items-center gap-1.5 shrink-0">
+                          <label
+                            title="Trocar imagem de capa directamente"
+                            className="inline-flex items-center gap-1 rounded bg-[#F36B21] px-2.5 py-1 text-[11px] font-semibold text-white hover:bg-[#dc5b14] transition-colors cursor-pointer"
+                          >
+                            <UploadCloud className="h-3 w-3" />
+                            <span>
+                              {uploadingKey === `proj-card-${proj.id}` ? 'A enviar...' : 'Foto'}
+                            </span>
+                            <input
+                              type="file"
+                              accept="image/*"
+                              onChange={(e) => {
+                                const f = e.target.files?.[0]
+                                e.target.value = ''
+                                if (!f) return
+                                handleUpload(
+                                  f,
+                                  `proj-card-${proj.id}`,
+                                  'blvrs-media/portfolio',
+                                  (url) => {
+                                    onUpdateProject({ ...proj, image: url })
+                                    notify('Imagem de capa actualizada.')
+                                  }
+                                )
+                              }}
+                              className="hidden"
+                            />
+                          </label>
                           <button
                             type="button"
                             onClick={() => startEditingProject(proj)}

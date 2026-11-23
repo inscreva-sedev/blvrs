@@ -310,36 +310,39 @@ export function App() {
     setQuotes(nextQuotes)
   }
 
-  const handleAddProject = (proj: ProjectItem) => {
-    setProjects((prev) => [proj, ...prev])
-    fetch('/api/projects', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        ...getAuthHeaders(),
-      },
-      body: JSON.stringify(proj),
-    }).catch(() => {})
-  }
-
-  const handleUpdateProject = (proj: ProjectItem) => {
-    setProjects((prev) => prev.map((p) => (p.id === proj.id ? proj : p)))
+  const syncProjectsToApi = (nextProjects: ProjectItem[]) => {
     fetch('/api/projects', {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json',
         ...getAuthHeaders(),
       },
-      body: JSON.stringify(proj),
+      body: JSON.stringify({ projects: nextProjects }),
     }).catch(() => {})
   }
 
+  const handleAddProject = (proj: ProjectItem) => {
+    setProjects((prev) => {
+      const next = [proj, ...prev]
+      syncProjectsToApi(next)
+      return next
+    })
+  }
+
+  const handleUpdateProject = (proj: ProjectItem) => {
+    setProjects((prev) => {
+      const next = prev.map((p) => (p.id === proj.id ? proj : p))
+      syncProjectsToApi(next)
+      return next
+    })
+  }
+
   const handleDeleteProject = (id: string) => {
-    setProjects((prev) => prev.filter((p) => p.id !== id))
-    fetch(`/api/projects?id=${encodeURIComponent(id)}`, {
-      method: 'DELETE',
-      headers: getAuthHeaders(),
-    }).catch(() => {})
+    setProjects((prev) => {
+      const next = prev.filter((p) => p.id !== id)
+      syncProjectsToApi(next)
+      return next
+    })
   }
 
   const handleUpdateConfig = (next: SiteConfig) => {

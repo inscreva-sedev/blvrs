@@ -45,7 +45,7 @@ const STORAGE_KEYS = {
   services: 'blvrs_services_v1',
   clients: 'blvrs_clients_v1',
   creatives: 'blvrs_creatives_v1',
-  teamMembers: 'blvrs_team_v3',
+  teamMembers: 'blvrs_team_v4',
 }
 
 function readStored<T>(key: string, fallback: T): T {

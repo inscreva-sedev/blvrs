@@ -611,4 +611,13 @@ export const DEFAULT_TEAM_MEMBERS: TeamMember[] = [
     image: '',
     specialties: ['Assistência Técnica', 'Iluminação & Som', 'Operação de Set'],
   },
+  {
+    id: 'team-afonso-domingos',
+    name: 'Afonso Domingos',
+    role: 'Fullstack',
+    department: 'Tecnologia & Desenvolvimento',
+    bio: 'Desenvolve plataformas digitais, aplicações web e integrações tecnológicas que dão suporte à presença e operação da BLVRS MEDIA.',
+    image: '',
+    specialties: ['Fullstack', 'Desenvolvimento Web', 'Sistemas & APIs'],
+  },
 ]

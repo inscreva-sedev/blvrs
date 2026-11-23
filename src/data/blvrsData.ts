@@ -633,5 +633,6 @@ export const DEFAULT_TEAM_MEMBERS: TeamMember[] = [
     bio: 'Criação de identidades visuais, peças gráficas e direcção estética digital.',
     image: '',
     specialties: ['Design Gráfico', 'Identidade Visual'],
+    instagram: 'https://www.instagram.com/inf8m8us/',
   },
 ]

@@ -80,6 +80,9 @@ function mergeTeamDefaults(list: TeamMember[]): TeamMember[] {
     if (member.id === 'team-afonso-domingos' && !member.instagram) {
       return { ...member, instagram: 'https://www.instagram.com/isvib.e/' }
     }
+    if (member.id === 'team-kelvin-aristides' && !member.instagram) {
+      return { ...member, instagram: 'https://www.instagram.com/inf8m8us/' }
+    }
     return member
   })
 

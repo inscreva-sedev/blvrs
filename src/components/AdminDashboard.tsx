@@ -591,6 +591,21 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
               </button>
             )
           })}
+
+          <div className="pt-3 mt-3 border-t border-white/10">
+            <a
+              href="https://www.wehosthere.com/webmail"
+              target="_blank"
+              rel="noreferrer"
+              className="flex w-full items-center justify-between rounded-lg border border-white/10 bg-[#171717] px-3.5 py-2.5 text-xs font-semibold text-[#E5E5E5] hover:border-[#F36B21] hover:text-white transition-colors"
+            >
+              <span className="flex items-center gap-3">
+                <Mail className="h-4 w-4 text-[#F36B21]" />
+                <span>Webmail Corporativo</span>
+              </span>
+              <ExternalLink className="h-3.5 w-3.5 text-[#A6A6A6]" />
+            </a>
+          </div>
         </nav>
 
         {/* Signed-in Admin Profile Footer */}
@@ -637,6 +652,16 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
           </div>
 
           <div className="flex items-center gap-2.5 shrink-0">
+            <a
+              href="https://www.wehosthere.com/webmail"
+              target="_blank"
+              rel="noreferrer"
+              title="Aceder ao Webmail WeHosThere"
+              className="hidden md:inline-flex items-center gap-1.5 rounded-md border border-white/15 bg-[#171717] px-3.5 py-2 text-xs font-semibold text-white hover:border-[#F36B21] hover:text-[#F36B21] transition-colors"
+            >
+              <Mail className="h-3.5 w-3.5 text-[#F36B21]" />
+              <span>Webmail</span>
+            </a>
             <button
               type="button"
               onClick={openNewProjectForm}
@@ -788,6 +813,24 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                         </p>
                       </div>
                     </button>
+
+                    <a
+                      href="https://www.wehosthere.com/webmail"
+                      target="_blank"
+                      rel="noreferrer"
+                      className="sm:col-span-2 flex items-center justify-between gap-3 rounded-lg border border-white/10 bg-[#0B0B0B] p-4 text-left hover:border-[#F36B21] transition-colors"
+                    >
+                      <div className="flex items-center gap-3">
+                        <Mail className="h-5 w-5 text-[#F36B21]" />
+                        <div>
+                          <p className="text-xs font-bold">Aceder ao Webmail (WeHosThere)</p>
+                          <p className="text-[11px] text-[#A6A6A6]">
+                            Abrir caixa de e-mail corporativo em www.wehosthere.com/webmail
+                          </p>
+                        </div>
+                      </div>
+                      <ExternalLink className="h-4 w-4 text-[#A6A6A6] shrink-0" />
+                    </a>
                   </div>
                 </div>
 

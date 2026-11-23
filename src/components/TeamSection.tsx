@@ -1,5 +1,5 @@
 import React, { useMemo, useState } from 'react'
-import { ArrowRight, Instagram, Linkedin, Sparkles, Users } from 'lucide-react'
+import { ArrowRight, Instagram, Linkedin, Users } from 'lucide-react'
 import { SiteConfig, TeamMember } from '../types'
 import { Reveal } from './Reveal'
 
@@ -62,8 +62,8 @@ export const TeamSection: React.FC<TeamSectionProps> = ({
           </div>
         </Reveal>
 
-        {/* Department Filter Pills */}
-        {departments.length > 2 && (
+        {/* Department Filter Pills (shown only when team grows beyond 6 members) */}
+        {teamMembers.length > 6 && departments.length > 2 && (
           <Reveal delayMs={60}>
             <div className="flex flex-wrap gap-2">
               {departments.map((dept) => {
@@ -113,52 +113,31 @@ export const TeamSection: React.FC<TeamSectionProps> = ({
                   )}
                   <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/15 to-transparent pointer-events-none" />
 
-                  <div className="absolute top-2.5 left-2.5 right-2.5 flex items-center justify-between gap-1.5">
-                    <span className="truncate rounded-full bg-black/75 px-2.5 py-1 text-[9px] font-bold uppercase tracking-wider text-white backdrop-blur-sm">
-                      {member.department}
-                    </span>
-                    {member.isLead && (
-                      <span className="inline-flex shrink-0 items-center gap-1 rounded-full bg-[#F36B21] px-2.5 py-1 text-[9px] font-bold uppercase tracking-wider text-white shadow">
-                        <Sparkles className="h-2.5 w-2.5" />
-                        <span>Direcção</span>
-                      </span>
-                    )}
-                  </div>
-
-                  <div className="absolute bottom-4 left-4 right-4 text-white">
-                    <h3 className="font-display text-lg font-extrabold leading-tight">
+                  <div className="absolute bottom-3.5 left-4 right-4 text-white">
+                    <h3 className="font-display text-base sm:text-lg font-extrabold leading-tight">
                       {member.name}
                     </h3>
-                    <p className="mt-1 text-xs font-semibold text-[#F36B21]">{member.role}</p>
+                    <p className="mt-0.5 text-xs font-semibold text-[#F36B21]">{member.role}</p>
                   </div>
                 </div>
 
-                <div className="flex flex-1 flex-col justify-between p-5 space-y-4 bg-white">
-                  <p className="text-xs sm:text-sm text-[#444] leading-relaxed">{member.bio}</p>
-
-                  <div className="space-y-3 pt-2 border-t border-black/5">
-                    {member.specialties.length > 0 && (
-                      <div className="flex flex-wrap gap-1.5">
-                        {member.specialties.map((spec) => (
-                          <span
-                            key={spec}
-                            className="rounded-full bg-[#F2F2F2] px-2.5 py-1 text-[10px] font-semibold text-[#0B0B0B]"
-                          >
-                            {spec}
-                          </span>
-                        ))}
-                      </div>
+                {(member.bio || member.instagram || member.linkedin) && (
+                  <div className="flex flex-1 flex-col justify-between p-4 gap-3 bg-white">
+                    {member.bio && (
+                      <p className="text-xs text-[#555] leading-relaxed line-clamp-2">
+                        {member.bio}
+                      </p>
                     )}
 
                     {(member.instagram || member.linkedin) && (
-                      <div className="flex items-center gap-2 pt-1">
+                      <div className="flex items-center gap-2 pt-1 border-t border-black/5">
                         {member.instagram && (
                           <a
                             href={member.instagram}
                             target="_blank"
                             rel="noreferrer"
                             aria-label={`Instagram de ${member.name}`}
-                            className="inline-flex h-8 w-8 items-center justify-center rounded-full border border-black/10 text-[#0B0B0B] hover:border-[#F36B21] hover:text-[#F36B21] transition-colors"
+                            className="inline-flex h-7 w-7 items-center justify-center rounded-full border border-black/10 text-[#0B0B0B] hover:border-[#F36B21] hover:text-[#F36B21] transition-colors"
                           >
                             <Instagram className="h-3.5 w-3.5" />
                           </a>
@@ -169,7 +148,7 @@ export const TeamSection: React.FC<TeamSectionProps> = ({
                             target="_blank"
                             rel="noreferrer"
                             aria-label={`LinkedIn de ${member.name}`}
-                            className="inline-flex h-8 w-8 items-center justify-center rounded-full border border-black/10 text-[#0B0B0B] hover:border-[#F36B21] hover:text-[#F36B21] transition-colors"
+                            className="inline-flex h-7 w-7 items-center justify-center rounded-full border border-black/10 text-[#0B0B0B] hover:border-[#F36B21] hover:text-[#F36B21] transition-colors"
                           >
                             <Linkedin className="h-3.5 w-3.5" />
                           </a>
@@ -177,7 +156,7 @@ export const TeamSection: React.FC<TeamSectionProps> = ({
                       </div>
                     )}
                   </div>
-                </div>
+                )}
               </article>
             </Reveal>
           ))}
